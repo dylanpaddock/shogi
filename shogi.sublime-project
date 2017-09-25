@@ -1,0 +1,39 @@
+{
+  "folders":
+  [
+    {
+      "file_exclude_patterns":
+      [
+        "*.meta",
+        "*.csproj",
+        "*.booproj",
+        "*.unityproj"
+      ],
+      "folder_exclude_patterns":
+      [
+        "Assets/Scripts"
+      ],
+      "folder_include_patterns":
+      [
+        "Assets",
+        "Assets/*"
+      ],
+      "path": "."
+    },
+    {
+      "file_exclude_patterns":
+      [
+        "*.meta"
+      ],
+      "path": "Assets\\Scripts"
+    },
+    {
+      "file_exclude_patterns":
+      [
+        "*.meta"
+      ],
+      "path": "Assets\\Editor"
+    }
+  ],
+  "solution_file": "./Platformer.sln"
+}

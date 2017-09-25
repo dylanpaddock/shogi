@@ -1,0 +1,9 @@
+change kifu to record moves as a tree. undo button branches tree, ability to mobe board to anywhere in the kifu.
+
+player makes move --> piece moves, board updates
+
+fill in classes
+    Piece
+        all pieces
+    Board
+    Kifu
