@@ -9,7 +9,8 @@ public abstract class Player : MonoBehaviour {
     public Board board;
     public Kifu kifu;
     public Turns turns;
-	// Use this for initialization
+    public bool movingUpward;
+    // Use this for initialization
 	protected virtual void Start () {
 
 	}

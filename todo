@@ -1,9 +1,24 @@
 change kifu to record moves as a tree. undo button branches tree, ability to mobe board to anywhere in the kifu.
 
 player makes move --> piece moves, board updates
+pieces have layer according to players, mask pieces for raycast according to player
 
 fill in classes
+    promotion choice, deal with in piece/player? Board.forcePromotion()
     Piece
+        update: movement for promotion, change ownership
         all pieces
+            movement, promotion, shape, etc.
+        promotion
+        demotion
     Board
-    Kifu
+        islegalMoveposition: not move legality check (that's done by the piece itself)
+        piecetoworldpoint
+        squaretoworldpoint
+        worldpointtosquare
+    Sideboard
+        piece->world coordinates
+    HumanPlayer
+        tweak piece movespeed
+        piece highlighting?
+        make move --> switch player

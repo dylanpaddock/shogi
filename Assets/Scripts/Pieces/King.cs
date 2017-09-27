@@ -26,6 +26,11 @@ public class King : Piece {
             isKingGeneral = false;
             startPosition = Position.makeNew(9,1);
         }
+        Mesh kingMesh = MakeMesh(5);
+        GetComponent<MeshFilter>().mesh = kingMesh;
+        GetComponent<MeshCollider>().sharedMesh = kingMesh;
+
+
         base.Start();
     }
 

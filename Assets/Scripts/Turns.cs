@@ -7,11 +7,7 @@ public class Turns : MonoBehaviour {
     int current;
 	// Use this for initialization
 	void Start () {
-        if (players[0].playerName == Player.Name.BLACK){
-            current = 0;
-        }else{
-            current = 1;
-        }
+        startGame();
 	}
 
 	// Update is called once per frame
@@ -25,5 +21,13 @@ public class Turns : MonoBehaviour {
 
     public Player currentPlayer(){
         return players[current];
+    }
+
+    public void startGame(){
+        if (players[0].playerName == Player.Name.BLACK){
+            current = 0;
+        }else{
+            current = 1;
+        }
     }
 }

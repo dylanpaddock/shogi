@@ -25,6 +25,14 @@ public class Sideboard : MonoBehaviour {
     }
 
     public void removePiece(Piece piece){//dropping a piece somewhere or resetting
+        pieceList.Remove(piece);
+    }
 
+    //converts a Position on the board to world space coordinates
+    public Vector3 PieceToWorldPoint(Piece piece){
+        //figure out how to lay out the pieces on the sideboard.
+        //by type/size, stack like pieces?
+        //theoretically needs to fit all pieces from both sides: 40 total
+        return Vector3.zero;
     }
 }
