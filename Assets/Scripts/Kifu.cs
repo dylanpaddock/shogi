@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Kifu : MonoBehaviour {
-    private List<Move> moveRecord;
+    public List<Move> moveRecord;
 	// Use this for initialization
 	void Start () {
         Reset();
@@ -34,6 +34,7 @@ public class Kifu : MonoBehaviour {
 
     public void addMove(Move move){
         moveRecord.Add(move);
+        move.number = moveRecord.Count - 1;
     }
 
     public string toString(){

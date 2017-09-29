@@ -4,21 +4,25 @@ player makes move --> piece moves, board updates
 pieces have layer according to players, mask pieces for raycast according to player
 
 fill in classes
-    promotion choice, deal with in piece/player? Board.forcePromotion()
-    Piece
-        update: movement for promotion, change ownership
+     Piece
+
         all pieces
-            movement, promotion, shape, etc.
-        promotion
-        demotion
-    Board
-        islegalMoveposition: not move legality check (that's done by the piece itself)
-        piecetoworldpoint
-        squaretoworldpoint
-        worldpointtosquare
-    Sideboard
-        piece->world coordinates
+            extended moves missing capture option
+            update: movement for promotion, change ownership
+            promotion
+            demotion
+            deselection missing sometimes
+    be careful with move vector orientation when pieces switch sides
+
+
     HumanPlayer
-        tweak piece movespeed
-        piece highlighting?
-        make move --> switch player
+        make move --> switch player; limit control to active player
+        promotion choice
+            promotion choice, Board.forcePromotion()
+        capture, move types
+    sideboard
+        fix layout
+rules missing:
+    drop rule
+    promotion
+

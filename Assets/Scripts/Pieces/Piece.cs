@@ -7,18 +7,17 @@ abstract public class Piece : MonoBehaviour {
     public Board board;
     protected List<Vector2> possibleMoves;
 
-    protected bool canPromote = false;
     public  bool isPromoted {get; protected set;}
     public Player currentPlayer {get; set;} //player controlling this piece, changes on capture/reset
     public Position currentPosition {get; protected set;} //where this piece is now or is moving to
     public Player owner; //initialization and reset
     public Position startPosition;//initialization and reset
+
     //movement controls
-    public static int moveDuration = 2;//time for movement to complete
     protected bool isMoving = false;
     protected bool isPromoting = false;
     protected bool isChangingSides = false;
-    protected float movingSpeed = .5f; //fixed
+    protected static float movingSpeed = 2f; //fixed
     protected int rotationSpeed; //fixed
     protected Vector3 _targetLocation;
     public Vector3 targetLocation {//where the piece moves toward in world
@@ -35,14 +34,20 @@ abstract public class Piece : MonoBehaviour {
 
     //visuals
     protected bool isSelected = false;
+    protected int size;
 
 
+    protected abstract void Awake();//piece-specific initialization
 
-	// Use this for initialization
 	protected virtual void Start () {
-        //initialization depends on individual piece. override.
         currentPosition = startPosition;
-        //set layer according to player
+        board.placePiece(this, currentPosition);
+        board.pieceList.Add(this);
+        transform.position = board.PieceToWorldPoint(this);
+
+        Mesh mesh = MakeMesh(size);
+        GetComponent<MeshFilter>().mesh = mesh;
+        GetComponent<MeshCollider>().sharedMesh = mesh;
 	}
 
 	// Update is called once per frame
@@ -59,19 +64,21 @@ abstract public class Piece : MonoBehaviour {
         }
         if (isPromoting){
             //missing: rotate for promotion
+            isPromoting = false;
         }
         if (isSelected){
             //missing: show selection effect
         }
         if (isChangingSides){//orientation by player, align piece and player directions
             //missing
+            isChangingSides = false;
         }
         //check selection w/ raycast
 
 	}
 
     //finds all legal positions this piece can move to
-    public List<Vector2> getLegalMoveVectors(){
+    public virtual List<Vector2> getLegalMoveVectors(){
         List<Vector2> legalMoves = new List<Vector2>();
         foreach (Vector2 possibleMove in possibleMoves){
             if (board.isLegalMovePosition(this, currentPosition + possibleMove)){
@@ -91,6 +98,15 @@ abstract public class Piece : MonoBehaviour {
         return false;
     }
 
+    public bool isLegalMovePosition(Position pos){
+        foreach (Vector2 legalMove in getLegalMoveVectors()){
+            if(pos.isEqual(legalMove + currentPosition)){
+                return true;
+            }
+        }
+        return false;
+    }
+
     //move this piece to the specified position
     //does not check if move is legal on the current board
     //does not change external representation
@@ -98,35 +114,46 @@ abstract public class Piece : MonoBehaviour {
         //set moving flags, target location
         isMoving = true;
         currentPosition = pos;
-        targetLocation = pos.getWorldPosition();
-        board.placePiece(this, pos);
+        if (pos.isSideboard){
+            targetLocation = pos.getSideboard().PieceToWorldPoint(this);
+
+        }else{
+            targetLocation = board.PieceToWorldPoint(this);
+        }
     }
 
     //move this piece according to the specified move
     public void makeMove(Move move){
-        //missing: check for bad inputs, validate information in Move object
-        if (move.startPosition != currentPosition || move.piece != this || board.isLegalMovePosition(this, move.endPosition)){
-            Debug.Log("There's something wrong with the move you made");
+        if (!move.startPosition.isEqual(currentPosition) || move.piece != this || !board.isLegalMovePosition(this, move.endPosition)){
+            Debug.LogError("There's something wrong with the move you made");
         }
+        if(move.type == Move.Type.capture){//relocating captured piece
+            Piece captured = board.getPiece(move.endPosition);
+            board.removePiece(captured);
+            captured.currentPlayer = this.currentPlayer;
+            currentPlayer.sideboard.addPiece(captured);
+            captured.moveToPosition(currentPlayer.sideboard.getPosition());
+        }
+        //missing: capture
+        if (currentPosition.isSideboard){
+            currentPosition.getSideboard().removePiece(this);
+        }else{
+            board.removePiece(this);
+        }
+
+
         moveToPosition(move.endPosition);
+        board.placePiece(this, move.endPosition);
+        board.kifu.addMove(move);
     }
 
     //flip the piece over
-    public void Promote(){
-        if (canPromote){
-            isPromoted = true;
-            isPromoting = true;
-            targetRotation = Quaternion.FromToRotation(Vector3.up, Vector3.down);
-            //update possible moves in subclass (depends on piece type)
-        }
+    public virtual void Promote(){
+        isPromoted = false;
     }
 
-    public void Demote(){
-        if (isPromoted){
-            //set flags for flip
-        }
+    public virtual void Demote(){
         isPromoted = false;
-        //reset possible moves
     }
 
 
@@ -141,12 +168,10 @@ abstract public class Piece : MonoBehaviour {
             currentPosition.getSideboard().removePiece(this);
         }else{
             board.removePiece(this);
-
         }
         board.placePiece(this, startPosition);
         currentPosition = startPosition; //return to start position on board+internally
-        isMoving = true;
-        targetLocation = startPosition.getWorldPosition();
+        targetLocation = board.PieceToWorldPoint(this);
 
     }
 
@@ -166,22 +191,22 @@ abstract public class Piece : MonoBehaviour {
         Mesh mesh = new Mesh();
         Vector3[] vertices = new Vector3[30];
         //front
-        vertices[0] = new Vector3(0-5.1875f, 0-5.5625f, 0-1.75f);
-        vertices[1] = new Vector3(1f-5.1875f, 9.375f-5.5625f, .8125f-1.75f);
-        vertices[2] = new Vector3(5.1875f-5.1875f, 11.125f-5.5625f, 1f-1.75f);
-        vertices[3] = new Vector3(9.375f-5.1875f, 9.375f-5.5625f, .8125f-1.75f);
-        vertices[4] = new Vector3(10.375f-5.1875f, 0-5.5625f, 0-1.75f);
+        vertices[0] = new Vector3(0-5.1875f, 0-5.5625f, 0-3.15f);
+        vertices[1] = new Vector3(1f-5.1875f, 9.375f-5.5625f, .8125f-3.15f);
+        vertices[2] = new Vector3(5.1875f-5.1875f, 11.125f-5.5625f, 1f-3.15f);
+        vertices[3] = new Vector3(9.375f-5.1875f, 9.375f-5.5625f, .8125f-3.15f);
+        vertices[4] = new Vector3(10.375f-5.1875f, 0-5.5625f, 0-3.15f);
         //back
-        vertices[5] = new Vector3(-5.1875f, 0-5.5625f, 3.5f-1.75f);
-        vertices[6] = new Vector3(1f-5.1875f, 9.375f-5.5625f, 2.6875f-1.75f);
-        vertices[7] = new Vector3(5.1875f-5.1875f, 11.125f-5.5625f, 2.5f-1.75f);
-        vertices[8] = new Vector3(9.375f-5.1875f, 9.375f-5.5625f, 2.6875f-1.75f);
-        vertices[9] = new Vector3(10.375f-5.1875f, 0-5.5625f, 3.5f-1.75f);
+        vertices[5] = new Vector3(-5.1875f, 0-5.5625f, 3.5f-3.15f);
+        vertices[6] = new Vector3(1f-5.1875f, 9.375f-5.5625f, 2.6875f-3.15f);
+        vertices[7] = new Vector3(5.1875f-5.1875f, 11.125f-5.5625f, 2.5f-3.15f);
+        vertices[8] = new Vector3(9.375f-5.1875f, 9.375f-5.5625f, 2.6875f-3.15f);
+        vertices[9] = new Vector3(10.375f-5.1875f, 0-5.5625f, 3.5f-3.15f);
 
         float vertScale = (27f + pieceSize)/32f;
         float horizScale = 22.5f/28.7f + .2f*pieceSize*(1 - 22.5f/28.7f);
         float depthScale = 7.75f/9.7f + .2f*pieceSize*(1 - 7.75f/9.7f);
-        Debug.Log("scales x: "+horizScale+", y: "+vertScale+", z: "+depthScale);
+        //Debug.Log("scales x: "+horizScale+", y: "+vertScale+", z: "+depthScale);
         for (int i = 0; i < 10; i++){
             vertices[i] = new Vector3(vertices[i].x*.75f*horizScale,
                                       vertices[i].y*.75f*vertScale,
@@ -241,6 +266,21 @@ abstract public class Piece : MonoBehaviour {
         mesh.triangles = triangles;
 
         Vector2[] uv = new Vector2[30];
+        //front
+        uv[0] = new Vector2(9f/512f, 1f/256f);
+        uv[1] = new Vector2(31f/512f, 210f/256f);
+        uv[2] = new Vector2(124f/512f, 249f/256f);
+        uv[3] = new Vector2(217f/512f, 210f/256f);
+        uv[4] = new Vector2(239f/512f, 1f/256f);
+        //back
+        uv[5] = new Vector2(495f/512f, 1f/256f);
+        uv[6] = new Vector2(473f/512f, 210f/256f);
+        uv[7] = new Vector2(380f/512f, 249f/256f);
+        uv[8] = new Vector2(287f/512f, 210f/256f);
+        uv[9] = new Vector2(265f/512f, 1f/256f);
+        for (int i = 10; i < 30; i++){
+            uv[i] = Vector2.zero;
+        }
         mesh.uv = uv;
 
         mesh.RecalculateNormals();

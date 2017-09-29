@@ -7,8 +7,8 @@ public class Move : ScriptableObject {
     public Piece piece;
     public Position startPosition {get; set;}
     public Position endPosition {get; set;}
-    public enum MoveType {simple, capture, drop}
-    public MoveType type;
+    public enum Type {simple, capture, drop}
+    public Type type;
     public bool isPromotion;
 
 	// Use this for initialization
@@ -21,15 +21,23 @@ public class Move : ScriptableObject {
 
 	}
 
-    public static Move makeNew(Position start, Position end, MoveType t, bool p){
+    public static Move makeNew(Piece piece, Position end, bool p){
         Move newMove = ScriptableObject.CreateInstance<Move>();
-        newMove.startPosition = start;
+        newMove.piece = piece;
+        newMove.startPosition = piece.currentPosition;
         if (end.isSideboard){
             Debug.Log("creating impossible move");
         }
         newMove.endPosition = end;
-        newMove.type = t;
         newMove.isPromotion = p;
+
+        if (piece.currentPosition.isSideboard){
+            newMove.type = Type.drop;
+        }else if (!piece.board.isEmpty(end)){
+            newMove.type = Type.capture;
+        }else{
+            newMove.type = Type.simple;
+        }
         return newMove;
     }
 
@@ -37,11 +45,11 @@ public class Move : ScriptableObject {
         string turn = number + ". ";
         string pieceName = piece.toString();
         string connector;
-        if (type == MoveType.simple) {
+        if (type == Type.simple) {
             connector = "-";
-        }else if (type == MoveType.capture){
+        }else if (type == Type.capture){
             connector = "x";
-        }else{ //(type == MoveType.drop) drop move starts from sideboard
+        }else{ //(type == Type.drop) drop move starts from sideboard
             connector = "*";
             return turn + pieceName + connector + endPosition.toString();
         }

@@ -79,13 +79,18 @@ public class Position : ScriptableObject {
         return null;
     }
 
-    //get the world coordinates for this position: board position or sideboard position
-    public Vector3 getWorldPosition(){
-        return Vector3.zero;
-    }
-
     public string toString(){
         return ""+x+""+y;
+    }
+
+    public bool isEqual(Position other){
+        if (this.isSideboard && other.isSideboard){
+            return this.getSideboard() == other.getSideboard();
+        }else if (this.isSideboard != other.isSideboard || this.x != other.x || this.y != other.y){
+            return false;
+        }else {
+            return true;
+        }
     }
 
     //creates a new move which is a combination of the two given moves

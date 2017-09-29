@@ -8,6 +8,8 @@ public class Turns : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         startGame();
+        Debug.Log("current turn: " + toString());
+
 	}
 
 	// Update is called once per frame
@@ -17,10 +19,15 @@ public class Turns : MonoBehaviour {
 
     public void passTurn(){
         current = 1 - current;//switch player
+        Debug.Log("current turn: " + toString());
     }
 
     public Player currentPlayer(){
         return players[current];
+    }
+
+    public bool isTurn(Player player){
+        return currentPlayer() == player;
     }
 
     public void startGame(){
@@ -29,5 +36,9 @@ public class Turns : MonoBehaviour {
         }else{
             current = 1;
         }
+    }
+
+    public string toString(){
+        return players[current].playerName == Player.Name.BLACK ? "Black" : "White";
     }
 }

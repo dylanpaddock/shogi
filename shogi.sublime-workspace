@@ -4,12 +4,136 @@
 		"selected_items":
 		[
 			[
+				"Ve",
+				"Vector2"
+			],
+			[
+				"piece",
+				"pieceList"
+			],
+			[
+				"sel",
+				"selectedPiece"
+			],
+			[
+				"rem",
+				"removePiece"
+			],
+			[
+				"cu",
+				"currentPosition"
+			],
+			[
 				"is",
-				"isPromoted"
+				"isSideboard"
+			],
+			[
+				"curre",
+				"currentPosition"
+			],
+			[
+				"star",
+				"Start"
 			],
 			[
 				"p",
-				"piece"
+				"position"
+			],
+			[
+				"start",
+				"startPosition"
+			],
+			[
+				"Piece",
+				"PieceToWorldPoint"
+			],
+			[
+				"selected",
+				"selectedPiece"
+			],
+			[
+				"V",
+				"Vector2"
+			],
+			[
+				"isP",
+				"isPromoted"
+			],
+			[
+				"nu",
+				"numRows"
+			],
+			[
+				"isLet",
+				"isLegalMovePosition"
+			],
+			[
+				"de",
+				"deselectPiece"
+			],
+			[
+				"vert",
+				"vertScale"
+			],
+			[
+				"Vec",
+				"Vector2"
+			],
+			[
+				"ver",
+				"vertices"
+			],
+			[
+				"Vect",
+				"Vector3"
+			],
+			[
+				"isp",
+				"isPromoting"
+			],
+			[
+				"tar",
+				"targetLocation"
+			],
+			[
+				"movin",
+				"movingSpeed"
+			],
+			[
+				"selec",
+				"selectedPiece"
+			],
+			[
+				"pie",
+				"pieceList"
+			],
+			[
+				"lega",
+				"legalMove"
+			],
+			[
+				"mouse",
+				"mousePosition"
+			],
+			[
+				"mou",
+				"mousePosition"
+			],
+			[
+				"sele",
+				"selectedPiece"
+			],
+			[
+				"hit",
+				"hitInfo"
+			],
+			[
+				"stat",
+				"startPosition"
+			],
+			[
+				"curr",
+				"currentPosition"
 			],
 			[
 				"pi",
@@ -30,10 +154,6 @@
 			[
 				"move",
 				"moveRecord"
-			],
-			[
-				"pie",
-				"pieceName"
 			],
 			[
 				"Move",
@@ -80,10 +200,6 @@
 				"endPosition"
 			],
 			[
-				"star",
-				"startPosition"
-			],
-			[
 				"get",
 				"getPosition"
 			],
@@ -98,10 +214,6 @@
 			[
 				"to",
 				"toSideboard"
-			],
-			[
-				"cu",
-				"currentPosition"
 			],
 			[
 				"legal",
@@ -164,10 +276,6 @@
 				"Animal_shelter"
 			],
 			[
-				"rem",
-				"remove_stack"
-			],
-			[
 				"S",
 				"Set_of_Stacks"
 			],
@@ -182,14 +290,6 @@
 			[
 				"get_",
 				"get_data"
-			],
-			[
-				"curre",
-				"current_copy"
-			],
-			[
-				"curr",
-				"current_copy"
 			],
 			[
 				"a",
@@ -232,10 +332,26 @@
 	"buffers":
 	[
 		{
-			"file": "Assets/Scripts/Pieces/Piece.cs",
+			"file": "todo",
 			"settings":
 			{
-				"buffer_size": 2645,
+				"buffer_size": 815,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "Assets/Scripts/Turns.cs",
+			"settings":
+			{
+				"buffer_size": 957,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "Assets/Pieces/Piece.cs",
+			"settings":
+			{
+				"buffer_size": 9622,
 				"line_ending": "Unix"
 			}
 		},
@@ -243,49 +359,15 @@
 			"file": "Assets/Scripts/Board.cs",
 			"settings":
 			{
-				"buffer_size": 1544,
+				"buffer_size": 4426,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "Assets/Scripts/Turns.cs",
+			"file": "Assets/Scripts/Players/HumanPlayer.cs",
 			"settings":
 			{
-				"buffer_size": 589,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"contents": "Searching 23 files for \"boardPosition\"\n\nC:\\Users\\Dylan\\Documents\\Shogi\\Assets\\game.unity:\n    <binary>\n\nC:\\Users\\Dylan\\Documents\\Shogi\\Assets\\Scripts\\Board.cs:\n   32          foreach(Piece p in pieceList){\n   33              p.Reset();\n   34:             pieceLayout[p.boardPosition.x, p.boardPosition.y] = null;\n   35              pieceLayout[p.startPosition.x, p.startPosition.y] = p;\n   36          }\n   ..\n   42  \n   43      void makeMove(Piece piece, Vector2 move){\n   44:         makeMove(piece, piece.boardPosition + move);\n   45      }\n   46  \n\n4 matches across 2 files\n",
-			"settings":
-			{
-				"buffer_size": 578,
-				"line_ending": "Windows",
-				"name": "Find Results",
-				"scratch": true
-			}
-		},
-		{
-			"file": "Assets/Scripts/Pieces/King.cs",
-			"settings":
-			{
-				"buffer_size": 1074,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "Assets/Scripts/Position.cs",
-			"settings":
-			{
-				"buffer_size": 3105,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "Assets/Scripts/Sideboard.cs",
-			"settings":
-			{
-				"buffer_size": 483,
+				"buffer_size": 3884,
 				"line_ending": "Unix"
 			}
 		}
@@ -329,30 +411,32 @@
 		"side_bar_visible": false,
 		"status_bar_visible": false
 	},
-	"expanded_folders":
-	[
-		"/C/Users/Dylan/Documents/Shogi",
-		"/C/Users/Dylan/Documents/Shogi/Assets",
-		"/C/Users/Dylan/Documents/Shogi/Assets/Scripts",
-		"/C/Users/Dylan/Documents/Shogi/Assets/Scripts/Pieces",
-		"/C/Users/Dylan/Documents/Shogi/Assets/Scripts/Players",
-		"/C/Users/Dylan/Documents/Shogi/Assets/Editor"
-	],
 	"file_history":
 	[
-		"/C/Users/Dylan/Documents/Shogi/Assets/Scripts/Board.cs",
-		"/C/Users/Dylan/Documents/Shogi/Assets/Scripts/Players/ComputerPlayer.cs",
-		"/C/Users/Dylan/Documents/Shogi/Assets/Scripts/Players/HumanPlayer.cs",
+		"/C/Users/Dylan/Documents/Shogi/shogi.sublime-project",
+		"/C/Users/Dylan/Documents/Shogi/Assets/Scripts/Sideboard.cs",
+		"/C/Users/Dylan/Documents/Shogi/Assets/Pieces/Pawn.cs",
+		"/C/Users/Dylan/Documents/Shogi/Assets/Pieces/King.cs",
+		"/C/Users/Dylan/Documents/Shogi/Assets/Pieces/Silver.cs",
+		"/C/Users/Dylan/Documents/Shogi/Assets/Scripts/Turns.cs",
+		"/C/Users/Dylan/Documents/Shogi/Assets/Scripts/Kifu.cs",
 		"/C/Users/Dylan/Documents/Shogi/Assets/Scripts/Position.cs",
 		"/C/Users/Dylan/Documents/Shogi/Assets/Scripts/Move.cs",
-		"/C/Users/Dylan/Documents/Shogi/Assets/Scripts/Kifu.cs",
-		"/C/Users/Dylan/Documents/Shogi/Assets/Scripts/Sideboard.cs",
-		"/C/Users/Dylan/Documents/Shogi/Assets/Scripts/Turns.cs",
-		"/C/Users/Dylan/Documents/Shogi/Assets/Scripts/Players/Player.cs",
 		"/C/Users/Dylan/Documents/Shogi/Assets/Scripts/Pieces/King.cs",
+		"/C/Users/Dylan/Documents/Shogi/Assets/Scripts/Board.cs",
+		"/C/Users/Dylan/Documents/Shogi/Assets/Scripts/Players/HumanPlayer.cs",
+		"/C/Users/Dylan/Documents/Shogi/Assets/Scripts/Players/Player.cs",
+		"/C/Users/Dylan/Documents/Shogi/Assets/Scripts/Pieces/Pawn.cs",
+		"/C/Users/Dylan/Documents/Shogi/Assets/Scripts/Pieces/Lance.cs",
+		"/C/Users/Dylan/Documents/Shogi/Assets/Scripts/Pieces/Knight.cs",
+		"/C/Users/Dylan/Documents/Shogi/Assets/Scripts/Pieces/Silver.cs",
+		"/C/Users/Dylan/Documents/Shogi/Assets/Scripts/Pieces/Gold.cs",
+		"/C/Users/Dylan/Documents/Shogi/Assets/Scripts/Pieces/Rook.cs",
+		"/C/Users/Dylan/Documents/Shogi/Assets/Scripts/Pieces/Bishop.cs",
+		"/C/Users/Dylan/Documents/Shogi/Assets/Scripts/Pieces/Piece.cs",
+		"/C/Users/Dylan/Documents/Shogi/Assets/Scripts/Players/ComputerPlayer.cs",
 		"/C/Users/Dylan/Documents/Shogi/Assets/Scripts/Piece.cs",
 		"/C/Users/Dylan/Documents/Shogi/Assets/Scripts/King.cs",
-		"/C/Users/Dylan/Documents/Shogi/shogi.sublime-project",
 		"/C/Users/Dylan/Documents/Nim/Assets/Scripts/Turns.cs",
 		"/C/Users/Dylan/Documents/Nim/.gitignore",
 		"/C/Users/Dylan/Documents/Nim/Assets/Scripts/Menu.cs",
@@ -456,22 +540,11 @@
 		"/C/Users/Dylan/Documents/resume/japan travel estimate",
 		"/C/Users/Dylan/Documents/daily log",
 		"/C/Users/Dylan/.ssh/id_rsa.pub",
-		"/C/Users/Dylan/Documents/travel/japan",
-		"/C/Users/Dylan/Documents/cs/nand2tetris/nand2tetris/projects/05/CPU.hdl",
-		"/C/Users/Dylan/Documents/cs/nand2tetris/nand2tetris/projects/05/Memory.hdl",
-		"/C/Users/Dylan/Documents/cs/nand2tetris/nand2tetris/projects/03/b/RAM4K.hdl",
-		"/C/Users/Dylan/Documents/cs/nand2tetris/nand2tetris/projects/03/b/RAM16K.hdl",
-		"/C/Users/Dylan/Documents/cs/nand2tetris/nand2tetris/projects/04/mult/Mult.asm",
-		"/C/Users/Dylan/Documents/cs/nand2tetris/nand2tetris/projects/04/fill/Fill.asm",
-		"/C/Users/Dylan/Documents/cs/nand2tetris/nand2tetris/projects/03/a/PC.hdl",
-		"/C/Users/Dylan/Documents/cs/nand2tetris/nand2tetris/projects/03/a/RAM64.hdl",
-		"/C/Users/Dylan/Documents/cs/nand2tetris/nand2tetris/projects/03/b/RAM512.hdl",
-		"/C/Users/Dylan/Documents/cs/nand2tetris/nand2tetris/projects/03/a/RAM8.hdl",
-		"/C/Users/Dylan/Documents/cs/nand2tetris/nand2tetris/projects/03/a/Register.hdl"
+		"/C/Users/Dylan/Documents/travel/japan"
 	],
 	"find":
 	{
-		"height": 30.0
+		"height": 63.0
 	},
 	"find_in_files":
 	{
@@ -486,6 +559,49 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			",",
+			"256f",
+			"/",
+			"x",
+			"();\n",
+			"islegalmoveposition",
+			"pieceList",
+			"pieceList.Add(",
+			"pieceList",
+			"selectedPiece =",
+			"king",
+			"sideboard",
+			"isselecting",
+			"isSelecting = true",
+			"changings",
+			"changing",
+			"debug.log",
+			"debug",
+			"islegalMoveposition",
+			"getWorldPosition",
+			"vector3.zero",
+			"debug.log",
+			");",
+			"piece",
+			"-1.75f",
+			"Board.isLegalMovePosition",
+			"isLegalMovePosition",
+			"islegalposition",
+			"position",
+			"getLegalMoves",
+			"isLegalmove",
+			"size",
+			"triangles",
+			"ScreenToWorldUtil",
+			"islegal",
+			"square",
+			"Square",
+			"square",
+			"worldLocation",
+			"isDragging",
+			"protected",
+			"makeMove",
+			"vector2",
 			"boardPosition",
 			"newPos",
 			"x()",
@@ -570,50 +686,7 @@
 			"am",
 			"0",
 			"d",
-			"r",
-			"10",
-			"Or",
-			"13",
-			"12",
-			"11",
-			"b[",
-			"a[",
-			"[16]",
-			"10",
-			"([a-z]{6})\\1",
-			"\\b([a-z]{5})\\1\\b",
-			"\\b([a-z]{6})\\1\\b",
-			"^.{73}$",
-			"^.{69}$",
-			"^.{66}$",
-			"^.{65}$",
-			"^.{60}$",
-			"^.{72}$",
-			"\\b\\w{24}",
-			"[^c]ei",
-			"[^c]ie",
-			"cie",
-			"[bcdfghjklmnpqrstvwyz]{9}",
-			"[bcdfghjklmnpqrstvwyz]{10}",
-			"[aeiou]{6}",
-			"[qwrtpsdfghjklzxcvbnm]{6}",
-			"razz",
-			"z......z",
-			"z.......z",
-			"z........z",
-			"assertEqual",
-			"searchfun",
-			"assert_equal",
-			"helper",
-			"nutton",
-			"nutt",
-			"edwin",
-			"langedc",
-			"hellos",
-			"gems",
-			"not requi",
-			"maple",
-			"cie"
+			"r"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -631,89 +704,30 @@
 	"groups":
 	[
 		{
-			"selected": 1,
+			"selected": 2,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "Assets/Scripts/Pieces/Piece.cs",
+					"file": "todo",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2645,
+						"buffer_size": 815,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2373,
-								2373
+								44,
+								44
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/C#/C#.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 1144.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 2,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "Assets/Scripts/Board.cs",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1544,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								893,
-								893
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/C#/C#.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 352.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "Assets/Scripts/Turns.cs",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 589,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								128,
-								128
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/C#/C#.sublime-syntax",
+							"auto_name": "",
+							"syntax": "Packages/Text/Plain text.tmLanguage",
 							"tab_size": 4,
 							"translate_tabs_to_spaces": true
 						},
@@ -725,75 +739,20 @@
 					"type": "text"
 				},
 				{
-					"buffer": 3,
+					"buffer": 1,
+					"file": "Assets/Scripts/Turns.cs",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 578,
-						"regions":
-						{
-							"match":
-							{
-								"flags": 112,
-								"regions":
-								[
-									[
-										269,
-										282
-									],
-									[
-										288,
-										301
-									],
-									[
-										508,
-										521
-									]
-								],
-								"scope": ""
-							}
-						},
-						"selection":
-						[
-							[
-								277,
-								277
-							]
-						],
-						"settings":
-						{
-							"detect_indentation": false,
-							"line_numbers": false,
-							"output_tag": 1,
-							"result_base_dir": "",
-							"result_file_regex": "^([^ 	].*):$",
-							"result_line_regex": "^ +([0-9]+):",
-							"scroll_past_end": true,
-							"syntax": "Packages/Default/Find Results.hidden-tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 5,
-					"type": "text"
-				},
-				{
-					"buffer": 4,
-					"file": "Assets/Scripts/Pieces/King.cs",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1074,
+						"buffer_size": 957,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								249,
-								249
+								308,
+								308
 							]
 						],
 						"settings":
@@ -803,65 +762,113 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 6,
-					"type": "text"
-				},
-				{
-					"buffer": 5,
-					"file": "Assets/Scripts/Position.cs",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 3105,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1674,
-								1674
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/C#/C#.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 528.0,
+						"translation.y": 88.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 4,
 					"type": "text"
 				},
 				{
-					"buffer": 6,
-					"file": "Assets/Scripts/Sideboard.cs",
+					"buffer": 2,
+					"file": "Assets/Pieces/Piece.cs",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 483,
+						"buffer_size": 9622,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								474,
-								474
+								9205,
+								9205
+							],
+							[
+								9255,
+								9255
+							],
+							[
+								9306,
+								9306
+							],
+							[
+								9357,
+								9357
+							],
+							[
+								9406,
+								9406
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/C#/C#.sublime-syntax"
+							"syntax": "Packages/C#/C#.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 5162.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "Assets/Scripts/Board.cs",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 4426,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2741,
+								2741
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C#/C#.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1436.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "Assets/Scripts/Players/HumanPlayer.cs",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3884,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2162,
+								2162
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C#/C#.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 264.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 3,
@@ -947,7 +954,7 @@
 	"show_open_files": false,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 150.0,
+	"side_bar_width": 257.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{

@@ -2,15 +2,59 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Rook : MonoBehaviour {
+public class Rook : Piece {
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    protected override void Awake(){
+        isPromoted = false;
+        currentPlayer = owner;
+        size = 4;
+    }
+
+    public override void Promote(){
+
+    }
+
+    public override void Demote(){
+
+    }
+
+    public override string toString(){
+        if (isPromoted){
+            return "R+";
+        }
+        return "R";
+    }
+
+    // look at the board and calculate the possible moves this piece can make
+    private void CalculateMoveVectors(){
+        this.possibleMoves = new List<Vector2>();
+        List<Vector2> directions = new List<Vector2>();
+        directions.Add(new Vector2(0, 1));
+        directions.Add(new Vector2(1, 0));
+        directions.Add(new Vector2(0, -1));
+        directions.Add(new Vector2(-1, 0));
+        foreach (Vector2 direction in directions){
+            Vector2 moveVector = direction;
+            Position movePosition = currentPosition + moveVector;
+            Debug.Log("position to check: (" + movePosition.x+", " + movePosition.y+")");
+            int count = 0;
+            while (board.isEmpty(movePosition)){
+                Debug.Log("move found: (" + movePosition.x+", "+movePosition.y+")");
+                this.possibleMoves.Add(moveVector);
+                moveVector += direction;
+                movePosition = currentPosition + moveVector;
+                if (count > 10){
+                    Debug.Log("found infinite loop??");
+                    break;
+                }
+                count++;
+            }
+        }
+
+    }
+
+    public override List<Vector2> getLegalMoveVectors(){
+        CalculateMoveVectors();
+        return base.getLegalMoveVectors();
+    }
 }

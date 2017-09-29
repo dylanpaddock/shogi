@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class Player : MonoBehaviour {
-    public int playerNumber;//player one or player 2. player one gets the King General
-    public enum Name {BLACK, WHITE};//black goes first
+   public enum Name {BLACK, WHITE};//black goes first
     public Name playerName;
     public Board board;
+    public Sideboard sideboard;
     public Kifu kifu;
     public Turns turns;
     public bool movingUpward;
@@ -23,6 +23,7 @@ public abstract class Player : MonoBehaviour {
     protected virtual void TakeTurn(Piece piece, Move move){
         kifu.addMove(move);
         piece.makeMove(move);
+        //promotion choice
         turns.passTurn();
     }
 }

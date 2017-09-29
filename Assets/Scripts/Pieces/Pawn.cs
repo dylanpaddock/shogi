@@ -2,15 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Pawn : MonoBehaviour {
+public class Pawn : Piece {
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+	protected override void Awake(){
+        possibleMoves = new List<Vector2>();
+        possibleMoves.Add(new Vector2(0, -1));
+        isPromoted = false;
+        currentPlayer = owner;
+        size = 0;
+    }
+
+    public override string toString(){
+        if (isPromoted){
+            return "+P";
+        }
+        return "P";
+    }
 }

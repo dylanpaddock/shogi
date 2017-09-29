@@ -13,61 +13,57 @@ public class HumanPlayer : Player {
 
 	// Update is called once per frame
 	protected override void Update () {
-        if (!isSelecting && Input.GetMouseButtonDown(0)){//selecting a piece
-            Debug.Log("mouse pressed");
-            //see if mouse collides with an object
+        if (turns.isTurn(this)){
+            if (!isSelecting && Input.GetMouseButtonDown(0)){//selecting a piece
+                //Debug.Log("mouse pressed");
+                //see if mouse collides with an object
 
-            int layermask = (1 << 8); //find where mouse click hits board, ignoring pieces
-            RaycastHit hitInfo = new RaycastHit();
-            bool hit = Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hitInfo, Mathf.Infinity, layermask);
-
-            if (hit){
-                Debug.Log("piece hit: " + hitInfo.transform.gameObject.name);
-                selectedPiece = hitInfo.transform.gameObject.GetComponent<Piece>();
-                if (selectedPiece != null){//if the object is a Piece, select it
-                    isSelecting = true;
-                    selectedPiece.selectPiece();
+                int layermask = ~0;//int layermask = (1 << 8); //find where mouse click hits board, ignoring pieces
+                RaycastHit hitInfo = new RaycastHit();
+                bool hit = Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hitInfo, Mathf.Infinity, layermask);
+                if (hit){
+                    Debug.Log("piece hit: " + hitInfo.transform.gameObject.name);
+                    selectedPiece = hitInfo.transform.gameObject.GetComponent<Piece>();
+                    if (selectedPiece != null){//if the object is a Piece, select it
+                        isSelecting = true;
+                        selectedPiece.selectPiece();
+                    }
                 }
+            }else if (isSelecting && Input.GetMouseButtonUp(0)){//releasing a piece
+                //Debug.Log("mouse released");
+                isSelecting = false;//detach from mouse
+                bool legalMove = false;
+                int layermask = ~(1 << 8); //find where mouse click hits board, ignoring pieces
+                RaycastHit hitInfo = new RaycastHit();
+                bool hit = Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hitInfo, Mathf.Infinity, layermask);
+                if (hit && hitInfo.transform.gameObject.GetComponent<Board>() == board){//piece released on board.
+                    Vector2 loc = board.WorldPointToSquare(hitInfo.point);//snap to bounds
+                    Position p = Position.makeNew((int)loc.x, (int)loc.y);
+                    if (board.isLegalMovePosition(selectedPiece, p) && selectedPiece.isLegalMovePosition(p)){//check if location is legal for this piece
+                        Debug.Log("Found legal move. Taking it. (" + p.x + ", "+p.y+")");
+                        legalMove = true;
+                        Move chosenMove = Move.makeNew(selectedPiece, p, false);
+                        TakeTurn(selectedPiece, chosenMove);
+                        selectedPiece.deselectPiece();
+                        isSelecting = false;
+                        selectedPiece = null;
+                    }
+                }
+                if (!legalMove){//move is illegal, return to starting place
+                    if (selectedPiece.currentPosition.isSideboard){
+                        Debug.Log("return to sideboard");
+                        selectedPiece.targetLocation = selectedPiece.currentPosition.getSideboard().PieceToWorldPoint(selectedPiece);
+                    }else{
+                        Debug.Log("return to board");
+                        selectedPiece.targetLocation = board.PieceToWorldPoint(selectedPiece);
+                    }
+                }
+
+            }else if (isSelecting){//dragging a piece
+                //
+                selectedPiece.targetLocation = ScreenToWorldUtil(Input.mousePosition, 10);
             }
         }
-        if (isSelecting){
-            selectedPiece.targetLocation = ScreenToWorldUtil(Input.mousePosition, 10);
-        }
-
-        if (isSelecting && Input.GetMouseButtonUp(0)){//releasing a piece
-            Debug.Log("mouse released");
-            isSelecting = false;//detach from mouse
-            selectedPiece.targetLocation = ScreenToWorldUtil(Input.mousePosition, 0);
-
-            bool legalMove = false;
-            int layermask = ~(1 << 8); //find where mouse click hits board, ignoring pieces
-            RaycastHit hitInfo = new RaycastHit();
-            bool hit = Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hitInfo, Mathf.Infinity, layermask);
-            if (hit && hitInfo.transform.gameObject.GetComponent<Board>() == board){//piece released on board.
-                Vector2 loc = board.WorldPointToSquare(hitInfo.point);
-                //snap to bounds
-                Position p = Position.makeNew((int)loc.x, (int)loc.y);
-                if (board.isLegalMovePosition(selectedPiece, p)){//check if location is legal for this piece
-                    Debug.Log("Found legal move. Taking it. (" + p.x + ", "+p.y+")");
-                    legalMove = true;
-                    selectedPiece.targetLocation = board.SquareToWorldPoint((int)loc.x, (int)loc.y);
-                    //missing: make move
-                    selectedPiece.deselectPiece();
-                }
-            }
-
-            if (!legalMove){//move is illegal, return to starting place
-                if (selectedPiece.currentPosition.isSideboard){
-                    Debug.Log("return to sideboard");
-                    selectedPiece.targetLocation = selectedPiece.currentPosition.getSideboard().PieceToWorldPoint(selectedPiece);
-                }else{
-                    Debug.Log("return to board");
-                    selectedPiece.targetLocation = board.PieceToWorldPoint(selectedPiece);
-                }
-                selectedPiece.deselectPiece();
-            }
-        }
-
 	}
 
     void OnGUI(){
