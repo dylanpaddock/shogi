@@ -9,7 +9,6 @@ public abstract class Player : MonoBehaviour {
     public Sideboard sideboard;
     public Kifu kifu;
     public Turns turns;
-    public bool movingUpward;
     // Use this for initialization
 	protected virtual void Start () {
 
@@ -26,4 +25,17 @@ public abstract class Player : MonoBehaviour {
         //promotion choice
         turns.passTurn();
     }
+
+    public bool isPlayerOne(){//true if player is black, i.e. plays first
+        return playerName == Name.BLACK;
+    }
+
+    public int layerNumber(){
+        if (playerName == Name.BLACK){
+            return 8;
+        }else{
+            return 9;
+        }
+    }
+
 }

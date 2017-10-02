@@ -8,17 +8,26 @@ abstract public class Piece : MonoBehaviour {
     protected List<Vector2> possibleMoves;
 
     public  bool isPromoted {get; protected set;}
-    public Player currentPlayer {get; set;} //player controlling this piece, changes on capture/reset
+    private Player _currentPlayer;
+    public Player currentPlayer {
+        get{
+            return _currentPlayer;
+        }
+        set{
+            if (_currentPlayer != value){//player is changing
+                isChangingSides = true;
+                this.gameObject.layer = value.layerNumber();
+            }
+            _currentPlayer = value;
+        }//player controlling this piece, changes on capture/reset
+    }
     public Position currentPosition {get; protected set;} //where this piece is now or is moving to
     public Player owner; //initialization and reset
     public Position startPosition;//initialization and reset
 
     //movement controls
     protected bool isMoving = false;
-    protected bool isPromoting = false;
-    protected bool isChangingSides = false;
     protected static float movingSpeed = 2f; //fixed
-    protected int rotationSpeed; //fixed
     protected Vector3 _targetLocation;
     public Vector3 targetLocation {//where the piece moves toward in world
         get{
@@ -29,7 +38,29 @@ abstract public class Piece : MonoBehaviour {
             _targetLocation = value;
         }
     }
-    public Quaternion targetRotation {get; set;}
+    protected bool isChangingSides = false;
+    protected bool isPromoting = false;
+    protected int rotationSpeed; //fixed
+    protected Quaternion _targetRotation;
+    public Quaternion targetPromotionRotation {
+        get{
+            return _targetRotation;
+        }
+        set{
+            isPromoting = true;
+            _targetRotation.x = value.x;
+            _targetRotation.y = value.y;
+        }
+    }
+    public Quaternion targetSideRotation {
+        get{
+            return _targetRotation;
+        }
+        set{
+            isPromoting = true;
+            _targetRotation.z = value.z;
+        }
+    }
 
 
     //visuals
@@ -81,8 +112,9 @@ abstract public class Piece : MonoBehaviour {
     public virtual List<Vector2> getLegalMoveVectors(){
         List<Vector2> legalMoves = new List<Vector2>();
         foreach (Vector2 possibleMove in possibleMoves){
-            if (board.isLegalMovePosition(this, currentPosition + possibleMove)){
-                legalMoves.Add(possibleMove);
+            int directionFactor = currentPlayer.isPlayerOne() ? 1 : -1;
+            if (board.isLegalMovePosition(this, currentPosition + directionFactor*possibleMove)){
+                legalMoves.Add(directionFactor*possibleMove);
             }
         }
         return legalMoves;
@@ -162,7 +194,6 @@ abstract public class Piece : MonoBehaviour {
         Demote();
         //restore control to owner
         currentPlayer = owner;
-        isChangingSides = true;
         //remove from old position in board/sideboard
         if (currentPosition.isSideboard){
             currentPosition.getSideboard().removePiece(this);

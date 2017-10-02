@@ -57,11 +57,11 @@ public class Board : MonoBehaviour {
         }
         //missing: deal with piece types: pawn, lance, knight
         if (piece is Pawn || piece is Lance){
-            return (piece.currentPlayer.movingUpward && pos.y == 1) ||
-            (!piece.currentPlayer.movingUpward && pos.y == numRows);//can't be in last row
+            return (piece.currentPlayer.isPlayerOne() && pos.y == 1) ||
+            (!piece.currentPlayer.isPlayerOne() && pos.y == numRows);//can't be in last row
         }else if (piece is Knight){
-            return (piece.currentPlayer.movingUpward && pos.y < 3) ||
-            (!piece.currentPlayer.movingUpward && pos.y > numRows - 2);
+            return (piece.currentPlayer.isPlayerOne() && pos.y < 3) ||
+            (!piece.currentPlayer.isPlayerOne() && pos.y > numRows - 2);
         }
         return true;
     }
@@ -85,7 +85,7 @@ public class Board : MonoBehaviour {
 
     public void placePiece(Piece piece, Position position){
         //update the board layout only. doesn't affect external objects
-        //if (!piece.currentPlayer.movingUpward){
+        //if (!piece.currentPlayer.isPlayerOne()){
         //    position.y = numRows - position.y + 1;
         //}
         if (!isLegalMovePosition(piece, position)){
@@ -105,7 +105,7 @@ public class Board : MonoBehaviour {
 
     public Piece getPiece(Position pos){
         if(!isValidPosition(pos)){
-            Debug.LogError("Error: can't find you piece in an imaginary place");
+            Debug.LogError("Error: can't find your piece in an imaginary place" );
         }
         return pieceLayout[pos.x, pos.y];
 

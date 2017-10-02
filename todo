@@ -7,7 +7,6 @@ fill in classes
      Piece
 
         all pieces
-            extended moves missing capture option
             update: movement for promotion, change ownership
             promotion
             demotion
@@ -16,7 +15,6 @@ fill in classes
 
 
     HumanPlayer
-        make move --> switch player; limit control to active player
         promotion choice
             promotion choice, Board.forcePromotion()
         capture, move types
@@ -25,4 +23,6 @@ fill in classes
 rules missing:
     drop rule
     promotion
+    check
+    winning
 

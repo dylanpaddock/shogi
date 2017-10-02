@@ -3,11 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Bishop : Piece {
+    protected List<Vector2> directions;
 
     protected override void Awake(){
         isPromoted = false;
         currentPlayer = owner;
         size = 4;
+
+        directions = new List<Vector2>();
+        directions.Add(new Vector2(1, -1));
+        directions.Add(new Vector2(1, 1));
+        directions.Add(new Vector2(-1, 1));
+        directions.Add(new Vector2(-1, -1));
     }
 
     public override void Promote(){
@@ -25,32 +32,40 @@ public class Bishop : Piece {
         return "B";
     }
 
-    // look at the board and calculate the possible moves this piece can make
-    private void CalculateMoveVectors(){
-        this.possibleMoves = new List<Vector2>();
+        //finds all legal positions this piece can move to
+
+
+    // look at the board and calculate the possible extended moves this piece can make, useful only for bishop, rook and lance
+    protected void CalculateMoveVectors(){
         //can go up to 8 units in any diag direction
         //stop upon reaching a unit
-        List<Vector2> directions = new List<Vector2>();
-        directions.Add(new Vector2(1, -1));
-        directions.Add(new Vector2(1, 1));
-        directions.Add(new Vector2(-1, 1));
-        directions.Add(new Vector2(-1, -1));
+        this.possibleMoves = new List<Vector2>();
         foreach (Vector2 direction in directions){
             Vector2 moveVector = direction;
             Position movePosition = currentPosition + moveVector;
-            Debug.Log("position to check: (" + movePosition.x+", " + movePosition.y+")");
-            while (board.isEmpty(movePosition)){
-                Debug.Log("move found: (" + movePosition.x+", "+movePosition.y+")");
+            //Debug.Log("position to check: (" + movePosition.x+", " + movePosition.y+")");
+            while (board.isValidPosition(movePosition) && board.isEmpty(movePosition)){//stop when hit a piece
+                //Debug.Log("move found: (" + movePosition.x+", "+movePosition.y+")");
                 this.possibleMoves.Add(moveVector);
                 moveVector += direction;
                 movePosition = currentPosition + moveVector;
-            }//missing: check for possibility of capture, move into occupied square
+            }
+            if(board.isValidPosition(movePosition) && board.getPiece(movePosition).currentPlayer != this.currentPlayer){//check for opponent's piece to capture
+                //Debug.Log("move found: (" + movePosition.x+", "+movePosition.y+")");
+                this.possibleMoves.Add(moveVector);
+            }
         }
 
     }
 
     public override List<Vector2> getLegalMoveVectors(){
         CalculateMoveVectors();
-        return base.getLegalMoveVectors();
+        List<Vector2> legalMoves = new List<Vector2>();
+        foreach (Vector2 possibleMove in possibleMoves){
+            if (board.isLegalMovePosition(this, currentPosition + possibleMove)){
+                legalMoves.Add(possibleMove);
+            }
+        }
+        return legalMoves;
     }
 }

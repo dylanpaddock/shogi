@@ -17,8 +17,7 @@ public class HumanPlayer : Player {
             if (!isSelecting && Input.GetMouseButtonDown(0)){//selecting a piece
                 //Debug.Log("mouse pressed");
                 //see if mouse collides with an object
-
-                int layermask = ~0;//int layermask = (1 << 8); //find where mouse click hits board, ignoring pieces
+                int layermask = (1 << layerNumber()); //find where mouse click hits board, ignoring other team's pieces
                 RaycastHit hitInfo = new RaycastHit();
                 bool hit = Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hitInfo, Mathf.Infinity, layermask);
                 if (hit){
@@ -33,16 +32,16 @@ public class HumanPlayer : Player {
                 //Debug.Log("mouse released");
                 isSelecting = false;//detach from mouse
                 bool legalMove = false;
-                int layermask = ~(1 << 8); //find where mouse click hits board, ignoring pieces
+                int layermask = ~(1 << layerNumber()); //find where mouse click hits board, ignoring all pieces
                 RaycastHit hitInfo = new RaycastHit();
                 bool hit = Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hitInfo, Mathf.Infinity, layermask);
-                if (hit && hitInfo.transform.gameObject.GetComponent<Board>() == board){//piece released on board.
+                if (hit && (hitInfo.transform.gameObject.GetComponent<Board>() == board || hitInfo.transform.gameObject.GetComponent<Piece>())){//piece released over board.
                     Vector2 loc = board.WorldPointToSquare(hitInfo.point);//snap to bounds
                     Position p = Position.makeNew((int)loc.x, (int)loc.y);
                     if (board.isLegalMovePosition(selectedPiece, p) && selectedPiece.isLegalMovePosition(p)){//check if location is legal for this piece
-                        Debug.Log("Found legal move. Taking it. (" + p.x + ", "+p.y+")");
                         legalMove = true;
                         Move chosenMove = Move.makeNew(selectedPiece, p, false);
+                        Debug.Log("Found legal move. Taking it. " + chosenMove.toString());
                         TakeTurn(selectedPiece, chosenMove);
                         selectedPiece.deselectPiece();
                         isSelecting = false;
@@ -51,10 +50,10 @@ public class HumanPlayer : Player {
                 }
                 if (!legalMove){//move is illegal, return to starting place
                     if (selectedPiece.currentPosition.isSideboard){
-                        Debug.Log("return to sideboard");
+                        //Debug.Log("return to sideboard");
                         selectedPiece.targetLocation = selectedPiece.currentPosition.getSideboard().PieceToWorldPoint(selectedPiece);
                     }else{
-                        Debug.Log("return to board");
+                        //Debug.Log("return to board");
                         selectedPiece.targetLocation = board.PieceToWorldPoint(selectedPiece);
                     }
                 }
