@@ -7,7 +7,6 @@ public class Lance : Piece {
 
     protected override void Awake(){
         isPromoted = false;
-        currentPlayer = owner;
         size = 1;
 
     }
@@ -37,7 +36,7 @@ public class Lance : Piece {
         Position movePosition = currentPosition + moveVector;
         //Debug.Log("position to check: (" + movePosition.x+", " + movePosition.y+")");
         while (board.isValidPosition(movePosition) && board.isEmpty(movePosition)){//stop when hit a piece
-            Debug.Log("move found: (" + movePosition.x+", "+movePosition.y+")");
+//            Debug.Log("move found: (" + movePosition.x+", "+movePosition.y+")");
             this.possibleMoves.Add(moveVector);
             moveVector += directionFactor*direction;
             movePosition = currentPosition + moveVector;
@@ -49,11 +48,18 @@ public class Lance : Piece {
     }
 
     public override List<Vector2> getLegalMoveVectors(){
-        CalculateMoveVectors();
         List<Vector2> legalMoves = new List<Vector2>();
-        foreach (Vector2 possibleMove in possibleMoves){
-            if (board.isLegalMovePosition(this, currentPosition + possibleMove)){
-                legalMoves.Add(possibleMove);
+        if (currentPosition.isSideboard){
+            CalculateDropPositions();
+            foreach (Vector2 possibleDrop in possibleDrops){
+                legalMoves.Add(possibleDrop);
+            }
+        }else{
+            CalculateMoveVectors();//fix
+            foreach (Vector2 possibleMove in possibleMoves){
+                if (board.isLegalMovePosition(this, currentPosition + possibleMove)){
+                    legalMoves.Add(possibleMove);
+                }
             }
         }
         return legalMoves;

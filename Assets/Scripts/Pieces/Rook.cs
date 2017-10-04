@@ -7,7 +7,6 @@ public class Rook : Piece {
 
     protected override void Awake(){
         isPromoted = false;
-        currentPlayer = owner;
         size = 4;
         directions = new List<Vector2>();
         directions.Add(new Vector2(0, 1));
@@ -41,7 +40,7 @@ public class Rook : Piece {
             Position movePosition = currentPosition + moveVector;
             //Debug.Log("position to check: (" + movePosition.x+", " + movePosition.y+")");
             while (board.isValidPosition(movePosition) && board.isEmpty(movePosition)){//stop when hit a piece
-                Debug.Log("move found: (" + movePosition.x+", "+movePosition.y+")");
+//                Debug.Log("move found: (" + movePosition.x+", "+movePosition.y+")");
                 this.possibleMoves.Add(moveVector);
                 moveVector += direction;
                 movePosition = currentPosition + moveVector;
@@ -55,11 +54,18 @@ public class Rook : Piece {
     }
 
     public override List<Vector2> getLegalMoveVectors(){
-        CalculateMoveVectors();
         List<Vector2> legalMoves = new List<Vector2>();
-        foreach (Vector2 possibleMove in possibleMoves){
-            if (board.isLegalMovePosition(this, currentPosition + possibleMove)){
-                legalMoves.Add(possibleMove);
+        if (currentPosition.isSideboard){
+            CalculateDropPositions();
+            foreach (Vector2 possibleDrop in possibleDrops){
+                legalMoves.Add(possibleDrop);
+            }
+        }else{
+            CalculateMoveVectors();
+            foreach (Vector2 possibleMove in possibleMoves){
+                if (board.isLegalMovePosition(this, currentPosition + possibleMove)){
+                    legalMoves.Add(possibleMove);
+                }
             }
         }
         return legalMoves;

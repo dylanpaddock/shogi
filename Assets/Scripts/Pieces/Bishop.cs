@@ -7,7 +7,6 @@ public class Bishop : Piece {
 
     protected override void Awake(){
         isPromoted = false;
-        currentPlayer = owner;
         size = 4;
 
         directions = new List<Vector2>();
@@ -59,11 +58,18 @@ public class Bishop : Piece {
     }
 
     public override List<Vector2> getLegalMoveVectors(){
-        CalculateMoveVectors();
         List<Vector2> legalMoves = new List<Vector2>();
-        foreach (Vector2 possibleMove in possibleMoves){
-            if (board.isLegalMovePosition(this, currentPosition + possibleMove)){
-                legalMoves.Add(possibleMove);
+        if (currentPosition.isSideboard){
+            CalculateDropPositions();
+            foreach (Vector2 possibleDrop in possibleDrops){
+                legalMoves.Add(possibleDrop);
+            }
+        }else{
+            CalculateMoveVectors();
+            foreach (Vector2 possibleMove in possibleMoves){
+                if (board.isLegalMovePosition(this, currentPosition + possibleMove)){
+                    legalMoves.Add(possibleMove);
+                }
             }
         }
         return legalMoves;

@@ -6,6 +6,7 @@ abstract public class Piece : MonoBehaviour {
     //internal states and data
     public Board board;
     protected List<Vector2> possibleMoves;
+    protected List<Vector2> possibleDrops;
 
     public  bool isPromoted {get; protected set;}
     private Player _currentPlayer;
@@ -14,11 +15,9 @@ abstract public class Piece : MonoBehaviour {
             return _currentPlayer;
         }
         set{
-            if (_currentPlayer != value){//player is changing
-                isChangingSides = true;
-                this.gameObject.layer = value.layerNumber();
-            }
             _currentPlayer = value;
+            this.targetSideRotation = _currentPlayer.targetRotation;
+            this.gameObject.layer = _currentPlayer.layerNumber();
         }//player controlling this piece, changes on capture/reset
     }
     public Position currentPosition {get; protected set;} //where this piece is now or is moving to
@@ -40,27 +39,30 @@ abstract public class Piece : MonoBehaviour {
     }
     protected bool isChangingSides = false;
     protected bool isPromoting = false;
-    protected int rotationSpeed; //fixed
-    protected Quaternion _targetRotation;
-    public Quaternion targetPromotionRotation {
+    protected float rotationSpeed = 5f; //fixed
+    protected Quaternion _targetPromotionRotation;
+    protected Quaternion _targetSideRotation;
+    protected Quaternion targetPromotionRotation {//sets a rotation for promotion, x->180->0
         get{
-            return _targetRotation;
+            return _targetPromotionRotation;
         }
         set{
+            oldRotation = this.transform.rotation;
             isPromoting = true;
-            _targetRotation.x = value.x;
-            _targetRotation.y = value.y;
+            _targetPromotionRotation *= value;
         }
     }
-    public Quaternion targetSideRotation {
+    protected Quaternion targetSideRotation {
         get{
-            return _targetRotation;
+            return _targetSideRotation;
         }
         set{
-            isPromoting = true;
-            _targetRotation.z = value.z;
+            oldRotation = this.transform.rotation;
+            isChangingSides = true;
+            _targetSideRotation = value;
         }
     }
+    protected Quaternion oldRotation;
 
 
     //visuals
@@ -75,6 +77,10 @@ abstract public class Piece : MonoBehaviour {
         board.placePiece(this, currentPosition);
         board.pieceList.Add(this);
         transform.position = board.PieceToWorldPoint(this);
+
+        currentPlayer = owner;
+        transform.rotation = currentPlayer.targetRotation;
+        targetSideRotation = currentPlayer.targetRotation;
 
         Mesh mesh = MakeMesh(size);
         GetComponent<MeshFilter>().mesh = mesh;
@@ -93,16 +99,15 @@ abstract public class Piece : MonoBehaviour {
                 transform.position += movingSpeed*(error.normalized);
             }
         }
-        if (isPromoting){
-            //missing: rotate for promotion
-            isPromoting = false;
-        }
-        if (isSelected){
-            //missing: show selection effect
-        }
-        if (isChangingSides){//orientation by player, align piece and player directions
-            //missing
-            isChangingSides = false;
+
+        if (isChangingSides || isPromoting){//orientation by player, align piece and player directions
+            transform.rotation =  Quaternion.RotateTowards(transform.rotation, targetSideRotation, rotationSpeed);
+            if (this.transform.rotation == targetSideRotation){
+                isChangingSides = false;
+            }
+            if (this.transform.rotation == targetPromotionRotation){
+                isPromoting = false;
+            }
         }
         //check selection w/ raycast
 
@@ -111,10 +116,17 @@ abstract public class Piece : MonoBehaviour {
     //finds all legal positions this piece can move to
     public virtual List<Vector2> getLegalMoveVectors(){
         List<Vector2> legalMoves = new List<Vector2>();
-        foreach (Vector2 possibleMove in possibleMoves){
+        if (currentPosition.isSideboard){
+            CalculateDropPositions();
+            foreach (Vector2 possibleDrop in possibleDrops){
+                legalMoves.Add(possibleDrop);
+            }
+        }else{
             int directionFactor = currentPlayer.isPlayerOne() ? 1 : -1;
-            if (board.isLegalMovePosition(this, currentPosition + directionFactor*possibleMove)){
-                legalMoves.Add(directionFactor*possibleMove);
+            foreach (Vector2 possibleMove in possibleMoves){
+                if (board.isLegalMovePosition(this, currentPosition + directionFactor*possibleMove)){
+                    legalMoves.Add(directionFactor*possibleMove);
+                }
             }
         }
         return legalMoves;
@@ -159,6 +171,7 @@ abstract public class Piece : MonoBehaviour {
         if (!move.startPosition.isEqual(currentPosition) || move.piece != this || !board.isLegalMovePosition(this, move.endPosition)){
             Debug.LogError("There's something wrong with the move you made");
         }
+        //move with capture
         if(move.type == Move.Type.capture){//relocating captured piece
             Piece captured = board.getPiece(move.endPosition);
             board.removePiece(captured);
@@ -166,13 +179,12 @@ abstract public class Piece : MonoBehaviour {
             currentPlayer.sideboard.addPiece(captured);
             captured.moveToPosition(currentPlayer.sideboard.getPosition());
         }
-        //missing: capture
-        if (currentPosition.isSideboard){
+        //drop
+        if (move.type == Move.Type.drop){
             currentPosition.getSideboard().removePiece(this);
-        }else{
+        }else{//regular move
             board.removePiece(this);
         }
-
 
         moveToPosition(move.endPosition);
         board.placePiece(this, move.endPosition);
@@ -214,6 +226,24 @@ abstract public class Piece : MonoBehaviour {
     public void deselectPiece(){
         isSelected = false;
         //missing: disable highlight?
+    }
+
+    protected virtual void CalculateDropPositions(){
+        //drop is illegal if:
+        //  another piece occupies the position**accounted for in board
+        //  this piece has no possible moves (L,N,P)**accounted for in board
+        //  no two pawns in one file **override
+        //  pawn cannot drop for checkmate **override
+        this.possibleDrops = new List<Vector2>();
+        for (int x = 1; x <= 9; x++){
+            for (int y = 1; y <= 9; y++){
+                Position pos = Position.makeNew(x, y); //created and thrown away... inefficient
+                //Debug.Log("Position: "+pos.toString()+ " legal: "+ board.isLegalDropPosition(this, pos));
+                if (board.isLegalDropPosition(this, pos)){
+                    this.possibleDrops.Add(new Vector2(x, y));
+                }
+            }
+        }
     }
 
     protected Mesh MakeMesh(int pieceSize){

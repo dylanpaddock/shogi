@@ -4,25 +4,19 @@ player makes move --> piece moves, board updates
 pieces have layer according to players, mask pieces for raycast according to player
 
 fill in classes
-     Piece
 
-        all pieces
-            update: movement for promotion, change ownership
-            promotion
-            demotion
-            deselection missing sometimes
-    be careful with move vector orientation when pieces switch sides
-
-
+    Piece
+        update: movement for promotion, demotion
     HumanPlayer
         promotion choice
             promotion choice, Board.forcePromotion()
-        capture, move types
     sideboard
-        fix layout
+        sort piecelist
 rules missing:
-    drop rule
     promotion
     check
     winning
-
+    pawn-specific drop restriction can't drop pawn for mate or in file with another pawn
+issues:
+    lag when piece hits check. O(n^4) loop.
+    occasional null error. can't reproduce

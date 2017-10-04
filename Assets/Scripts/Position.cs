@@ -44,7 +44,7 @@ public class Position : ScriptableObject {
 
     public void set(int newx, int newy){
         if (newx == 0 || newy == 0){
-            Debug.Log("Trying to create illegal move from value");
+//            Debug.Log("Trying to create illegal move from value");
             return;
         }
         this.x = newx;

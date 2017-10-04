@@ -16,7 +16,6 @@ public class King : Piece {
         possibleMoves.Add(new Vector2(0,-1));
 
         isPromoted = false;
-        currentPlayer = owner;
         size = 5;
     }
 

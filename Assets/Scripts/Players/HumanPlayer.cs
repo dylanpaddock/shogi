@@ -21,7 +21,7 @@ public class HumanPlayer : Player {
                 RaycastHit hitInfo = new RaycastHit();
                 bool hit = Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hitInfo, Mathf.Infinity, layermask);
                 if (hit){
-                    Debug.Log("piece hit: " + hitInfo.transform.gameObject.name);
+//                    Debug.Log("piece hit: " + hitInfo.transform.gameObject.name);
                     selectedPiece = hitInfo.transform.gameObject.GetComponent<Piece>();
                     if (selectedPiece != null){//if the object is a Piece, select it
                         isSelecting = true;
@@ -41,11 +41,12 @@ public class HumanPlayer : Player {
                     if (board.isLegalMovePosition(selectedPiece, p) && selectedPiece.isLegalMovePosition(p)){//check if location is legal for this piece
                         legalMove = true;
                         Move chosenMove = Move.makeNew(selectedPiece, p, false);
-                        Debug.Log("Found legal move. Taking it. " + chosenMove.toString());
-                        TakeTurn(selectedPiece, chosenMove);
-                        selectedPiece.deselectPiece();
-                        isSelecting = false;
-                        selectedPiece = null;
+                        if (!board.removesCheck(chosenMove)){
+                            legalMove = false;
+                        }else{
+                            Debug.Log("Found legal move. Taking it. " + chosenMove.toString());
+                            TakeTurn(selectedPiece, chosenMove);
+                        }
                     }
                 }
                 if (!legalMove){//move is illegal, return to starting place
@@ -57,6 +58,8 @@ public class HumanPlayer : Player {
                         selectedPiece.targetLocation = board.PieceToWorldPoint(selectedPiece);
                     }
                 }
+                selectedPiece.deselectPiece();
+                selectedPiece = null;
 
             }else if (isSelecting){//dragging a piece
                 //
@@ -64,10 +67,6 @@ public class HumanPlayer : Player {
             }
         }
 	}
-
-    void OnGUI(){
-        //missing: highlight selected piece, here? or in Piece?
-    }
 
     Vector3 ScreenToWorldUtil(Vector3 v, float z){
         z += 1 + Camera.main.transform.position.z + board.transform.localScale.z/2;

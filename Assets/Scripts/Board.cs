@@ -7,12 +7,14 @@ public class Board : MonoBehaviour {
     public List<Sideboard> sideboards;
     public List<Piece> pieceList;
     public Kifu kifu;
-    private int numRows = 9;
-    private int numCols = 9;
+    public int numRows {get; protected set;}
+    public int numCols {get; protected set;}
 
 
 	// Use this for initialization
 	void Awake () {
+        numRows = 9;
+        numCols = 9;
         pieceLayout = new Piece[1 + numCols, 1 + numRows];
     }
 
@@ -44,15 +46,18 @@ public class Board : MonoBehaviour {
     }
 
     public bool isLegalDropPosition(Piece piece, Position pos){
-        if (forcePromotion(piece, pos) || pieceLayout[pos.x, pos.y] != null){ //illegal to drop some pieces to end rows, or on another piece
+        if (piece == null || !isValidPosition(pos)){//bad inputs
+            return false;
+        }
+        if (forcePromotion(piece, pos) || !isEmpty(pos)){ //occupied spot or no legal moves
             return false;
         }
         return true;
     }
 
     public bool forcePromotion(Piece piece, Position pos){
-        //can't drop certain pieces where they can't move
-        if(!isLegalMovePosition(piece, pos)){
+        //can't drop/move certain pieces where they can't move after
+        if(!isValidPosition(pos)){
             return false;
         }
         //missing: deal with piece types: pawn, lance, knight
@@ -63,7 +68,7 @@ public class Board : MonoBehaviour {
             return (piece.currentPlayer.isPlayerOne() && pos.y < 3) ||
             (!piece.currentPlayer.isPlayerOne() && pos.y > numRows - 2);
         }
-        return true;
+        return false;
     }
 
     //start a new game, putting all pieces to their correct positions
@@ -157,6 +162,60 @@ public class Board : MonoBehaviour {
             s += n + "\n";
         }
         return s;
+    }
+
+    public bool isCheck(Player p){//player p's king is in check
+        //find p's king
+        //check row, col, 8 around,
+        Position kingPos = Position.makeNew(p.sideboard);//dummy assignment
+        for (int x = 1; x < numCols; x++){
+            for (int y = 1; y < numRows; y++){
+                if (pieceLayout[x, y] is King && pieceLayout[x, y].currentPlayer == p){
+                    kingPos = Position.makeNew(x, y);
+                }
+            }
+        }
+        foreach (Piece piece in pieceLayout){
+            if (piece != null && piece.currentPlayer != p && piece.isLegalMovePosition(kingPos)){// any of op's pieces can move to king
+                return true;
+            }
+        }
+        return false;
+
+
+    }
+
+    //makes a move, looks for check, unmakes move
+    public bool removesCheck(Move move){
+        if (!move.startPosition.isSideboard){
+            removePiece(move.piece);
+        }
+        Piece temp = getPiece(move.endPosition);
+        placePiece(move.piece, move.endPosition);
+        bool result = isCheck(move.piece.currentPlayer);
+        pieceLayout[move.endPosition.x, move.endPosition.y] = temp;
+        if (!move.startPosition.isSideboard){
+            placePiece(move.piece, move.startPosition);
+        }
+        return !result;
+    }
+
+    public bool isCheckmate(Player p){
+        if (!isCheck(p)){
+            return false;
+        }
+        foreach (Piece piece in pieceList){
+            if (piece.currentPlayer == p){
+                foreach (Vector2 vec in piece.getLegalMoveVectors()){
+                    Move move = Move.makeNew(piece, piece.currentPosition + vec, false);
+                    if (removesCheck(move)){
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+
     }
 
 }

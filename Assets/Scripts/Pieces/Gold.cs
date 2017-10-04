@@ -14,7 +14,6 @@ public class Gold : Piece {
         possibleMoves.Add(new Vector2(-1, 0));
 
         isPromoted = false;
-        currentPlayer = owner;
         size = 3;
     }
 

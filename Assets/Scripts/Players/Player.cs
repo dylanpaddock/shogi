@@ -9,9 +9,14 @@ public abstract class Player : MonoBehaviour {
     public Sideboard sideboard;
     public Kifu kifu;
     public Turns turns;
+    public Quaternion targetRotation;
+    public Player opponent;
     // Use this for initialization
-	protected virtual void Start () {
+    protected void Awake () {
+        targetRotation.eulerAngles = (isPlayerOne()) ? new Vector3(5, 0, 0) : new Vector3(-5, 0, 180);
+    }
 
+	protected virtual void Start () {
 	}
 
 	// Update is called once per frame
@@ -23,6 +28,12 @@ public abstract class Player : MonoBehaviour {
         kifu.addMove(move);
         piece.makeMove(move);
         //promotion choice
+        //check for check + game end
+        if (board.isCheckmate(opponent)){
+            Debug.Log("~~~IT'S CHECKMATE!!!! YOU ARE THE WEINER!!!!");
+        }
+
+//        Debug.Log("Player " + (isPlayerOne() ? "one" : "two") + " is in check: " + board.isCheck(this));
         turns.passTurn();
     }
 

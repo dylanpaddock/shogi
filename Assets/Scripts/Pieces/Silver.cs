@@ -12,7 +12,6 @@ public class Silver : Piece {
         possibleMoves.Add(new Vector2(-1, 1));
         possibleMoves.Add(new Vector2(1, 1));
         isPromoted = false;
-        currentPlayer = owner;
         size = 3;
     }
 

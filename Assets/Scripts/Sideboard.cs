@@ -66,7 +66,7 @@ public class Sideboard : MonoBehaviour {
         int x = (index % rowSize) + 1;
         int y = (index / rowSize) + 1;
         newPos.x += scale.x*(x/(1f+rowSize) - .5f);
-        newPos.y += scale.y*(.5f - y/(1f+numRows));
+        newPos.y += owner.isPlayerOne() ? scale.y*(.5f - y/(1f+numRows)) : scale.y*(y/(1f+numRows) - .5f);
         newPos.z += -10;
         return newPos;
     }

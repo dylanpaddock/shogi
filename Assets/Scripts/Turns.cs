@@ -5,6 +5,8 @@ using UnityEngine;
 public class Turns : MonoBehaviour {
     public List<Player> players; //always two players
     int current;
+    public enum GameMode {standard, handicap, tsume};
+    public GameMode gameMode = GameMode.standard;
 	// Use this for initialization
 	void Start () {
         startGame();
@@ -20,6 +22,7 @@ public class Turns : MonoBehaviour {
     public void passTurn(){
         current = 1 - current;//switch player
         Debug.Log("current turn: " + toString());
+
     }
 
     public Player currentPlayer(){

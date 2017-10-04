@@ -9,7 +9,6 @@ public class Knight : Piece {
         possibleMoves.Add(new Vector2(1, -2));
         possibleMoves.Add(new Vector2(-1, -2));
         isPromoted = false;
-        currentPlayer = owner;
         size = 2;
     }
 

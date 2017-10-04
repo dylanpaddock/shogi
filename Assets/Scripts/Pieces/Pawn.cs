@@ -8,7 +8,6 @@ public class Pawn : Piece {
         possibleMoves = new List<Vector2>();
         possibleMoves.Add(new Vector2(0, -1));
         isPromoted = false;
-        currentPlayer = owner;
         size = 0;
     }
 
