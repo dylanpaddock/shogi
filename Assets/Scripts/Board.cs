@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Board : MonoBehaviour {
     private Piece[,] pieceLayout; // internal board representation
@@ -9,6 +10,9 @@ public class Board : MonoBehaviour {
     public Kifu kifu;
     public int numRows {get; protected set;}
     public int numCols {get; protected set;}
+    public Turns turns;
+
+    public Text winnerText;
 
 
 	// Use this for initialization
@@ -34,8 +38,8 @@ public class Board : MonoBehaviour {
         if (piece == null || !isValidPosition(pos)){
             return false;
         }
-        if(pieceLayout[pos.x, pos.y] != null){
-            return pieceLayout[pos.x, pos.y].currentPlayer != piece.currentPlayer;
+        if(!isEmpty(pos)){
+            return getPiece(pos).currentPlayer != piece.currentPlayer;
         }
 
         return true;
@@ -81,6 +85,9 @@ public class Board : MonoBehaviour {
 //            sideboard.Reset();
 //        }
         kifu.Reset();
+        turns.ResetPlayers();
+        turns.StartGame();
+        winnerText.gameObject.SetActive(false);
     }
 
     void placePiece(Piece piece, Vector2 move){
@@ -94,7 +101,7 @@ public class Board : MonoBehaviour {
         //    position.y = numRows - position.y + 1;
         //}
         if (!isLegalMovePosition(piece, position)){
-            Debug.Log("Tried moving a piece to an illegal position");
+            Debug.Log("Tried moving a piece to an illegal position: (" +position.x+ ", " +position.y+ ")");
         }
         pieceLayout[position.x, position.y] = piece;
 
@@ -133,7 +140,7 @@ public class Board : MonoBehaviour {
         Vector3 scale = this.transform.localScale;
         float newx = scale.x/2f - x*scale.x/10f;
         float newy = scale.y/2f - y*scale.y/10f;
-        float newz = scale.z/2f;
+        float newz = scale.z/2f + 1f;
 
         return new Vector3(-newx, -newy, -newz);
     }
@@ -214,8 +221,25 @@ public class Board : MonoBehaviour {
                 }
             }
         }
+        winnerText.gameObject.SetActive(true);
+        winnerText.text = turns.inactivePlayer().toString() + " is the winner!";
         return true;
-
     }
 
+    //finds the columns which contain a pawn.
+    public List<int> getPawnFiles(Player p){
+        List<int> pawnList = new List<int>();
+        for (int x = 1; x <= 9; x++){
+            for (int y = 1; y <= 9; y++){
+                Piece piece = pieceLayout[x, y];
+                if (piece is Pawn && piece.currentPlayer == p && !piece.isPromoted){
+                    pawnList.Add(x);
+                    break;
+                }
+
+            }
+
+        }
+        return pawnList;
+    }
 }

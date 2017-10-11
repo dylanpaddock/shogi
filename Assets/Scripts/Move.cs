@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 [CreateAssetMenu]
 public class Move : ScriptableObject {
-    public int number;
     public Piece piece;
     public Position startPosition {get; set;}
     public Position endPosition {get; set;}
@@ -42,7 +41,6 @@ public class Move : ScriptableObject {
     }
 
     public string toString(){
-        string turn = number + ". ";
         string pieceName = piece.toString();
         string connector;
         if (type == Type.simple) {
@@ -51,10 +49,10 @@ public class Move : ScriptableObject {
             connector = "x";
         }else{ //(type == Type.drop) drop move starts from sideboard
             connector = "*";
-            return turn + pieceName + connector + endPosition.toString();
+            return pieceName + connector + endPosition.toString();
         }
 
         string promotion = isPromotion? "+" : "";
-        return turn + pieceName + startPosition.toString()+ connector + promotion + endPosition.toString();
+        return pieceName + startPosition.toString()+ connector + promotion + endPosition.toString();
     }
 }

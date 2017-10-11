@@ -5,19 +5,21 @@ using UnityEngine;
 public class Knight : Piece {
 
     protected override void Awake(){
-        possibleMoves = new List<Vector2>();
-        possibleMoves.Add(new Vector2(1, -2));
-        possibleMoves.Add(new Vector2(-1, -2));
+        normalMoves = new List<Vector2>();
+        normalMoves.Add(new Vector2(1, -2));
+        normalMoves.Add(new Vector2(-1, -2));
         isPromoted = false;
         size = 2;
-    }
 
-    public override void Promote(){
+        promotedMoves = new List<Vector2>();
+        promotedMoves.Add(new Vector2(0, -1));
+        promotedMoves.Add(new Vector2(1, -1));
+        promotedMoves.Add(new Vector2(-1, -1));
+        promotedMoves.Add(new Vector2(0, 1));
+        promotedMoves.Add(new Vector2(1, 0));
+        promotedMoves.Add(new Vector2(-1, 0));
 
-    }
-
-    public override void Demote(){
-
+        possibleMoves = normalMoves;
     }
 
     public override string toString(){

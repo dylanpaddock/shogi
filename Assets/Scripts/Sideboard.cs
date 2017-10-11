@@ -36,7 +36,6 @@ public class Sideboard : MonoBehaviour {
         }
         //add in sorted order, from big to small: K, R, B, G, S, N, L, P
         pieceList.Insert(index, piece);//missing: sort by size
-        piece.Demote();
         numRows =  Mathf.FloorToInt(Mathf.Sqrt(pieceList.Count));
         rearrange();
     }

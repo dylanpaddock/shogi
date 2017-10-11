@@ -9,13 +9,13 @@ public class Lance : Piece {
         isPromoted = false;
         size = 1;
 
-    }
-
-    public override void Promote(){
-
-    }
-
-    public override void Demote(){
+        promotedMoves = new List<Vector2>();
+        promotedMoves.Add(new Vector2(0, -1));
+        promotedMoves.Add(new Vector2(1, -1));
+        promotedMoves.Add(new Vector2(-1, -1));
+        promotedMoves.Add(new Vector2(0, 1));
+        promotedMoves.Add(new Vector2(1, 0));
+        promotedMoves.Add(new Vector2(-1, 0));
 
     }
 
@@ -30,20 +30,24 @@ public class Lance : Piece {
     protected void CalculateMoveVectors(){
         //can go up to 8 units in any diag direction
         //stop upon reaching a unit
-        this.possibleMoves = new List<Vector2>();
-        int directionFactor = currentPlayer.isPlayerOne() ? 1 : -1;
-        Vector2 moveVector = directionFactor * direction;
-        Position movePosition = currentPosition + moveVector;
-        //Debug.Log("position to check: (" + movePosition.x+", " + movePosition.y+")");
-        while (board.isValidPosition(movePosition) && board.isEmpty(movePosition)){//stop when hit a piece
-//            Debug.Log("move found: (" + movePosition.x+", "+movePosition.y+")");
-            this.possibleMoves.Add(moveVector);
-            moveVector += directionFactor*direction;
-            movePosition = currentPosition + moveVector;
-        }
-        if(board.isValidPosition(movePosition) && board.getPiece(movePosition).currentPlayer != this.currentPlayer){//check for opponent's piece to capture
-            //Debug.Log("move found: (" + movePosition.x+", "+movePosition.y+")");
-            this.possibleMoves.Add(moveVector);
+        if (isPromoted){
+            possibleMoves = promotedMoves;
+        }else{
+            this.possibleMoves = new List<Vector2>();
+            int directionFactor = currentPlayer.isPlayerOne() ? 1 : -1;
+            Vector2 moveVector = directionFactor * direction;
+            Position movePosition = currentPosition + moveVector;
+            //Debug.Log("position to check: (" + movePosition.x+", " + movePosition.y+")");
+            while (board.isValidPosition(movePosition) && board.isEmpty(movePosition)){//stop when hit a piece
+    //            Debug.Log("move found: (" + movePosition.x+", "+movePosition.y+")");
+                this.possibleMoves.Add(moveVector);
+                moveVector += directionFactor*direction;
+                movePosition = currentPosition + moveVector;
+            }
+            if(board.isValidPosition(movePosition) && board.getPiece(movePosition).currentPlayer != this.currentPlayer){//check for opponent's piece to capture
+                //Debug.Log("move found: (" + movePosition.x+", "+movePosition.y+")");
+                this.possibleMoves.Add(moveVector);
+            }
         }
     }
 

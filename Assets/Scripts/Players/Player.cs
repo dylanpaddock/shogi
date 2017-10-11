@@ -9,11 +9,12 @@ public abstract class Player : MonoBehaviour {
     public Sideboard sideboard;
     public Kifu kifu;
     public Turns turns;
-    public Quaternion targetRotation;
+    public Vector3 targetRotation {get; protected set;}
     public Player opponent;
     // Use this for initialization
+
     protected void Awake () {
-        targetRotation.eulerAngles = (isPlayerOne()) ? new Vector3(5, 0, 0) : new Vector3(-5, 0, 180);
+        targetRotation = (isPlayerOne()) ? new Vector3(5, 0, 0) : new Vector3(-5, 0, 180);
     }
 
 	protected virtual void Start () {
@@ -48,5 +49,11 @@ public abstract class Player : MonoBehaviour {
             return 9;
         }
     }
+
+    public string toString(){
+        return playerName == Name.BLACK? "Black" : "White";
+    }
+
+    public abstract void Reset();
 
 }

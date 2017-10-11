@@ -13,4 +13,8 @@ public class ComputerPlayer : Player {
 	protected override void Update () {
 
 	}
+
+    public override void Reset(){
+
+    }
 }

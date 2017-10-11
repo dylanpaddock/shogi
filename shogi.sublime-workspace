@@ -4,6 +4,58 @@
 		"selected_items":
 		[
 			[
+				"Vec",
+				"Vector2"
+			],
+			[
+				"piece",
+				"pieceLayout"
+			],
+			[
+				"for",
+				"foreach"
+			],
+			[
+				"king",
+				"kingPos"
+			],
+			[
+				"curr",
+				"currentPlayer"
+			],
+			[
+				"Remov",
+				"removesCheck"
+			],
+			[
+				"play",
+				"Player"
+			],
+			[
+				"piec",
+				"pieceLayout"
+			],
+			[
+				"pie",
+				"pieceLayout"
+			],
+			[
+				"rmo",
+				"removePiece"
+			],
+			[
+				"ch",
+				"chosenMove"
+			],
+			[
+				"legal",
+				"legalMove"
+			],
+			[
+				"curren",
+				"currentPosition"
+			],
+			[
 				"targetR",
 				"targetRotation"
 			],
@@ -14,10 +66,6 @@
 			[
 				"pl",
 				"playerName"
-			],
-			[
-				"Vec",
-				"Vector3"
 			],
 			[
 				"target",
@@ -76,14 +124,6 @@
 				"currentPlayer"
 			],
 			[
-				"pie",
-				"pieceList"
-			],
-			[
-				"curr",
-				"currentPlayer"
-			],
-			[
 				"sle",
 				"selectedPiece"
 			],
@@ -98,10 +138,6 @@
 			[
 				"mov",
 				"movingUpward"
-			],
-			[
-				"piece",
-				"pieceLayout"
 			],
 			[
 				"move",
@@ -268,10 +304,6 @@
 				"toSideboard"
 			],
 			[
-				"legal",
-				"legalMoves"
-			],
-			[
 				"si",
 				"solution"
 			],
@@ -383,15 +415,25 @@
 			"file": "todo",
 			"settings":
 			{
-				"buffer_size": 569,
+				"buffer_size": 689,
 				"line_ending": "Windows"
+			}
+		},
+		{
+			"contents": "Searching 75 files for \"debug.log\"\n\nC:\\Users\\Dylan\\Documents\\Shogi\\Assets\\Scripts\\Board.cs:\n   51          }\n   52          if (forcePromotion(piece, pos) || !isEmpty(pos)){ //occupied spot or no legal moves\n   53:             Debug.Log(forcePromotion(piece, pos));\n   54:             Debug.Log(!isEmpty(pos));\n   55:             Debug.Log(toString());\n   56              return false;\n   57          }\n   ..\n   98          //}\n   99          if (!isLegalMovePosition(piece, position)){\n  100:             Debug.Log(\"Tried moving a piece to an illegal position\");\n  101          }\n  102          pieceLayout[position.x, position.y] = piece;\n  ...\n  106      public bool isEmpty(Position pos){//checks if a square is both valid and empty\n  107          if (!isValidPosition(pos)){\n  108:             Debug.Log(\"position (\" +pos.x+\", \"+pos.y+\") is invalid. Can't get a piece there.\");\n  109              return false;\n  110          }\n  ...\n  114      public Piece getPiece(Position pos){\n  115          if(!isValidPosition(pos)){\n  116:             Debug.LogError(\"Error: can't find your piece in an imaginary place\" );\n  117          }\n  118          return pieceLayout[pos.x, pos.y];\n  ...\n  147          int y = Mathf.RoundToInt(5 - point.y/11f);\n  148          if (x < 1 || x > 9 || y < 1 || y > 9){\n  149:             Debug.Log(\"this position is not a legal square on the board\");\n  150          }\n  151          return new Vector2(x, y);\n\nC:\\Users\\Dylan\\Documents\\Shogi\\Assets\\Scripts\\Move.cs:\n   27          newMove.startPosition = piece.currentPosition;\n   28          if (end.isSideboard){\n   29:             Debug.Log(\"creating impossible move\");\n   30          }\n   31          newMove.endPosition = end;\n\nC:\\Users\\Dylan\\Documents\\Shogi\\Assets\\Scripts\\Position.cs:\n    8          get {\n    9              if (sideboard){\n   10:                 Debug.Log(\"Asked for board position for sideboard piece\");\n   11                  return 0;\n   12              }\n   ..\n   21          get {\n   22              if (sideboard){\n   23:                 Debug.Log(\"Asked for board position for sideboard piece\");\n   24                  return 0;\n   25              }\n   ..\n   45      public void set(int newx, int newy){\n   46          if (newx == 0 || newy == 0){\n   47: //            Debug.Log(\"Trying to create illegal move from value\");\n   48              return;\n   49          }\n   ..\n   66  //    public Vector2 getPosition(){\n   67  //        if (isSideboard){\n   68: //            Debug.Log(\"Illegal request for board position on while on sideboard\");\n   69  //            return Vector2.zero;\n   70  //        }\n   ..\n   76              return sideboard;\n   77          }\n   78:         Debug.Log(\"Illegal request for sideboard position while on board\");\n   79          return null;\n   80      }\n\nC:\\Users\\Dylan\\Documents\\Shogi\\Assets\\Scripts\\Sideboard.cs:\n   62          Vector3 scale = this.transform.localScale;\n   63          int index = pieceList.FindIndex(item => item==piece);\n   64:         //Debug.Log(\"index: \"+index);\n   65          int rowSize = (pieceList.Count - 1)/numRows + 1;\n   66          int x = (index % rowSize) + 1;\n\nC:\\Users\\Dylan\\Documents\\Shogi\\Assets\\Scripts\\Turns.cs:\n   11  	void Start () {\n   12          startGame();\n   13:         Debug.Log(\"current turn: \" + toString());\n   14  \n   15  	}\n   ..\n   22      public void passTurn(){\n   23          current = 1 - current;//switch player\n   24:         Debug.Log(\"current turn: \" + toString());\n   25  \n   26      }\n\nC:\\Users\\Dylan\\Documents\\Shogi\\Assets\\Scripts\\Pieces\\Bishop.cs:\n   43              Vector2 moveVector = direction;\n   44              Position movePosition = currentPosition + moveVector;\n   45:             //Debug.Log(\"position to check: (\" + movePosition.x+\", \" + movePosition.y+\")\");\n   46              while (board.isValidPosition(movePosition) && board.isEmpty(movePosition)){//stop when hit a piece\n   47:                 //Debug.Log(\"move found: (\" + movePosition.x+\", \"+movePosition.y+\")\");\n   48                  this.possibleMoves.Add(moveVector);\n   49                  moveVector += direction;\n   ..\n   51              }\n   52              if(board.isValidPosition(movePosition) && board.getPiece(movePosition).currentPlayer != this.currentPlayer){//check for opponent's piece to capture\n   53:                 //Debug.Log(\"move found: (\" + movePosition.x+\", \"+movePosition.y+\")\");\n   54                  this.possibleMoves.Add(moveVector);\n   55              }\n\nC:\\Users\\Dylan\\Documents\\Shogi\\Assets\\Scripts\\Pieces\\Lance.cs:\n   35          Vector2 moveVector = directionFactor * direction;\n   36          Position movePosition = currentPosition + moveVector;\n   37:         //Debug.Log(\"position to check: (\" + movePosition.x+\", \" + movePosition.y+\")\");\n   38          while (board.isValidPosition(movePosition) && board.isEmpty(movePosition)){//stop when hit a piece\n   39: //            Debug.Log(\"move found: (\" + movePosition.x+\", \"+movePosition.y+\")\");\n   40              this.possibleMoves.Add(moveVector);\n   41              moveVector += directionFactor*direction;\n   ..\n   43          }\n   44          if(board.isValidPosition(movePosition) && board.getPiece(movePosition).currentPlayer != this.currentPlayer){//check for opponent's piece to capture\n   45:             //Debug.Log(\"move found: (\" + movePosition.x+\", \"+movePosition.y+\")\");\n   46              this.possibleMoves.Add(moveVector);\n   47          }\n\nC:\\Users\\Dylan\\Documents\\Shogi\\Assets\\Scripts\\Pieces\\Piece.cs:\n  170      public void makeMove(Move move){\n  171          if (!move.startPosition.isEqual(currentPosition) || move.piece != this || !board.isLegalMovePosition(this, move.endPosition)){\n  172:             Debug.LogError(\"There's something wrong with the move you made\");\n  173          }\n  174          //move with capture\n  ...\n  237          //  pawn cannot drop for checkmate **override\n  238          this.possibleDrops = new List<Vector2>();\n  239:         Debug.Log(\"finding drops\");\n  240          for (int x = 1; x <= 9; x++){\n  241              for (int y = 1; y <= 9; y++){\n  242                  Position pos = Position.makeNew(x, y); //created and thrown away... inefficient\n  243:                 //Debug.Log(\"Position: \"+pos.toString()+ \" legal: \"+ board.isLegalDropPosition(this, pos));\n  244                  if (board.isLegalDropPosition(this, pos)){\n  245:                     Debug.Log(\"Drop found: (\" +x+ \", \" +y+ \")\");\n  246                      this.possibleDrops.Add(new Vector2(x, y));\n  247                  }else{\n  248:                     Debug.Log(\"drop not found (\" +x+ \", \" +y+ \")\");\n  249                  }\n  250              }\n  ...\n  273          float horizScale = 22.5f/28.7f + .2f*pieceSize*(1 - 22.5f/28.7f);\n  274          float depthScale = 7.75f/9.7f + .2f*pieceSize*(1 - 7.75f/9.7f);\n  275:         //Debug.Log(\"scales x: \"+horizScale+\", y: \"+vertScale+\", z: \"+depthScale);\n  276          for (int i = 0; i < 10; i++){\n  277              vertices[i] = new Vector3(vertices[i].x*.75f*horizScale,\n\nC:\\Users\\Dylan\\Documents\\Shogi\\Assets\\Scripts\\Pieces\\Rook.cs:\n   39              Vector2 moveVector = direction;\n   40              Position movePosition = currentPosition + moveVector;\n   41:             //Debug.Log(\"position to check: (\" + movePosition.x+\", \" + movePosition.y+\")\");\n   42              while (board.isValidPosition(movePosition) && board.isEmpty(movePosition)){//stop when hit a piece\n   43: //                Debug.Log(\"move found: (\" + movePosition.x+\", \"+movePosition.y+\")\");\n   44                  this.possibleMoves.Add(moveVector);\n   45                  moveVector += direction;\n   ..\n   47              }\n   48              if(board.isValidPosition(movePosition) && board.getPiece(movePosition).currentPlayer != this.currentPlayer){//check for opponent's piece to capture\n   49:                 //Debug.Log(\"move found: (\" + movePosition.x+\", \"+movePosition.y+\")\");\n   50                  this.possibleMoves.Add(moveVector);\n   51              }\n\nC:\\Users\\Dylan\\Documents\\Shogi\\Assets\\Scripts\\Players\\HumanPlayer.cs:\n   16          if (turns.isTurn(this)){\n   17              if (!isSelecting && Input.GetMouseButtonDown(0)){//selecting a piece\n   18:                 //Debug.Log(\"mouse pressed\");\n   19                  //see if mouse collides with an object\n   20                  int layermask = (1 << layerNumber()); //find where mouse click hits board, ignoring other team's pieces\n   ..\n   22                  bool hit = Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hitInfo, Mathf.Infinity, layermask);\n   23                  if (hit){\n   24: //                    Debug.Log(\"piece hit: \" + hitInfo.transform.gameObject.name);\n   25                      selectedPiece = hitInfo.transform.gameObject.GetComponent<Piece>();\n   26                      if (selectedPiece != null){//if the object is a Piece, select it\n   ..\n   30                  }\n   31              }else if (isSelecting && Input.GetMouseButtonUp(0)){//releasing a piece\n   32:                 //Debug.Log(\"mouse released\");\n   33                  isSelecting = false;//detach from mouse\n   34                  bool legalMove = false;\n   ..\n   45                              legalMove = false;\n   46                          }else{\n   47:                             Debug.Log(\"Found legal move. Taking it. \" + chosenMove.toString());\n   48                              TakeTurn(selectedPiece, chosenMove);\n   49                          }\n   ..\n   52                  if (!legalMove){//move is illegal, return to starting place\n   53                      if (selectedPiece.currentPosition.isSideboard){\n   54:                         //Debug.Log(\"return to sideboard\");\n   55                          selectedPiece.targetLocation = selectedPiece.currentPosition.getSideboard().PieceToWorldPoint(selectedPiece);\n   56                      }else{\n   57:                         //Debug.Log(\"return to board\");\n   58                          selectedPiece.targetLocation = board.PieceToWorldPoint(selectedPiece);\n   59                      }\n\nC:\\Users\\Dylan\\Documents\\Shogi\\Assets\\Scripts\\Players\\Player.cs:\n   31          //check for check + game end\n   32          if (board.isCheckmate(opponent)){\n   33:             Debug.Log(\"~~~IT'S CHECKMATE!!!! YOU ARE THE WEINER!!!!\");\n   34          }\n   35  \n   36: //        Debug.Log(\"Player \" + (isPlayerOne() ? \"one\" : \"two\") + \" is in check: \" + board.isCheck(this));\n   37          turns.passTurn();\n   38      }\n\n39 matches across 11 files\n\n\nSearching 75 files for \"\"drop\"\n\nC:\\Users\\Dylan\\Documents\\Shogi\\Assets\\Scripts\\Pieces\\Piece.cs:\n  243                  //Debug.Log(\"Position: \"+pos.toString()+ \" legal: \"+ board.isLegalDropPosition(this, pos));\n  244                  if (board.isLegalDropPosition(this, pos)){\n  245:                     Debug.Log(\"Drop found: (\" +x+ \", \" +y+ \")\");\n  246                      this.possibleDrops.Add(new Vector2(x, y));\n  247                  }else{\n  248:                     Debug.Log(\"drop not found (\" +x+ \", \" +y+ \")\");\n  249                  }\n  250              }\n\n2 matches in 1 file\n",
+			"settings":
+			{
+				"buffer_size": 11147,
+				"line_ending": "Windows",
+				"name": "Find Results",
+				"scratch": true
 			}
 		},
 		{
 			"file": "Assets/Scripts/Pieces/Piece.cs",
 			"settings":
 			{
-				"buffer_size": 13011,
+				"buffer_size": 12835,
 				"line_ending": "Unix"
 			}
 		},
@@ -399,7 +441,15 @@
 			"file": "Assets/Scripts/Board.cs",
 			"settings":
 			{
-				"buffer_size": 5688,
+				"buffer_size": 7330,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "Assets/Scripts/Position.cs",
+			"settings":
+			{
+				"buffer_size": 3439,
 				"line_ending": "Unix"
 			}
 		},
@@ -407,7 +457,23 @@
 			"file": "Assets/Scripts/Players/Player.cs",
 			"settings":
 			{
-				"buffer_size": 1088,
+				"buffer_size": 1384,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "Assets/Scripts/Turns.cs",
+			"settings":
+			{
+				"buffer_size": 1062,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "Assets/Scripts/Players/HumanPlayer.cs",
+			"settings":
+			{
+				"buffer_size": 3867,
 				"line_ending": "Unix"
 			}
 		}
@@ -454,15 +520,17 @@
 	"expanded_folders":
 	[
 		"/C/Users/Dylan/Documents/Shogi/Assets/Scripts",
-		"/C/Users/Dylan/Documents/Shogi/Assets/Scripts/Pieces",
 		"/C/Users/Dylan/Documents/Shogi/Assets/Scripts/Players"
 	],
 	"file_history":
 	[
-		"/C/Users/Dylan/Documents/Shogi/Assets/Scripts/Pieces/Bishop.cs",
-		"/C/Users/Dylan/Documents/Shogi/Assets/Scripts/Players/HumanPlayer.cs",
+		"/C/Users/Dylan/Documents/Shogi/Assets/Scripts/Move.cs",
+		"/C/Users/Dylan/Documents/Shogi/Assets/Scripts/Position.cs",
 		"/C/Users/Dylan/Documents/Shogi/Assets/Scripts/Pieces/Rook.cs",
 		"/C/Users/Dylan/Documents/Shogi/Assets/Scripts/Pieces/Lance.cs",
+		"/C/Users/Dylan/Documents/Shogi/Assets/Scripts/Sideboard.cs",
+		"/C/Users/Dylan/Documents/Shogi/Assets/Scripts/Pieces/Bishop.cs",
+		"/C/Users/Dylan/Documents/Shogi/Assets/Scripts/Players/HumanPlayer.cs",
 		"/C/Users/Dylan/Documents/Shogi/Assets/Scripts/Players/ComputerPlayer.cs",
 		"/C/Users/Dylan/Documents/Shogi/Assets/Scripts/Players/Player.cs",
 		"/C/Users/Dylan/Documents/Shogi/Assets/Scripts/Pieces/King.cs",
@@ -470,11 +538,8 @@
 		"/C/Users/Dylan/Documents/Shogi/Assets/Scripts/Pieces/Silver.cs",
 		"/C/Users/Dylan/Documents/Shogi/Assets/Scripts/Pieces/Gold.cs",
 		"/C/Users/Dylan/Documents/Shogi/Assets/Scripts/Pieces/Pawn.cs",
-		"/C/Users/Dylan/Documents/Shogi/Assets/Scripts/Position.cs",
 		"/C/Users/Dylan/Documents/Shogi/Assets/Scripts/Pieces/Piece.cs",
-		"/C/Users/Dylan/Documents/Shogi/Assets/Scripts/Sideboard.cs",
 		"/C/Users/Dylan/Documents/Shogi/Assets/Scripts/Board.cs",
-		"/C/Users/Dylan/Documents/Shogi/Assets/Scripts/Move.cs",
 		"/C/Users/Dylan/Documents/Shogi/Assets/Scripts/Turns.cs",
 		"/C/Users/Dylan/Documents/Shogi/Assets/Scripts/Kifu.cs",
 		"/C/Users/Dylan/Documents/Shogi/shogi.sublime-project",
@@ -605,6 +670,13 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"\"drop",
+			"debug.log",
+			"public",
+			"oldRotation",
+			"targetSideRotation",
+			"targetPromotionRotation",
+			"isPromoting",
 			"targetPromotionRotation",
 			".transform.rotation",
 			"transform.rot",
@@ -725,14 +797,7 @@
 			"scriptab",
 			"pv",
 			"0",
-			"boardPosition",
-			"Position",
-			"Move",
-			"toSideboard",
-			"/",
-			"Matlab",
-			"blue",
-			"underline"
+			"boardPosition"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -759,15 +824,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 569,
+						"buffer_size": 689,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								335,
-								335
+								646,
+								646
 							]
 						],
 						"settings":
@@ -786,79 +851,316 @@
 				},
 				{
 					"buffer": 1,
-					"file": "Assets/Scripts/Pieces/Piece.cs",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 13011,
+						"buffer_size": 11147,
 						"regions":
 						{
+							"match":
+							{
+								"flags": 112,
+								"regions":
+								[
+									[
+										227,
+										236
+									],
+									[
+										285,
+										294
+									],
+									[
+										330,
+										339
+									],
+									[
+										506,
+										515
+									],
+									[
+										799,
+										808
+									],
+									[
+										1048,
+										1057
+									],
+									[
+										1322,
+										1331
+									],
+									[
+										1617,
+										1626
+									],
+									[
+										1854,
+										1863
+									],
+									[
+										2052,
+										2061
+									],
+									[
+										2284,
+										2293
+									],
+									[
+										2488,
+										2497
+									],
+									[
+										2695,
+										2704
+									],
+									[
+										3009,
+										3018
+									],
+									[
+										3271,
+										3280
+									],
+									[
+										3440,
+										3449
+									],
+									[
+										3713,
+										3722
+									],
+									[
+										3934,
+										3943
+									],
+									[
+										4329,
+										4338
+									],
+									[
+										4693,
+										4702
+									],
+									[
+										4906,
+										4915
+									],
+									[
+										5297,
+										5306
+									],
+									[
+										5707,
+										5716
+									],
+									[
+										5964,
+										5973
+									],
+									[
+										6214,
+										6223
+									],
+									[
+										6397,
+										6406
+									],
+									[
+										6569,
+										6578
+									],
+									[
+										6846,
+										6855
+									],
+									[
+										7248,
+										7257
+									],
+									[
+										7469,
+										7478
+									],
+									[
+										7864,
+										7873
+									],
+									[
+										8237,
+										8246
+									],
+									[
+										8664,
+										8673
+									],
+									[
+										9060,
+										9069
+									],
+									[
+										9332,
+										9341
+									],
+									[
+										9702,
+										9711
+									],
+									[
+										9944,
+										9953
+									],
+									[
+										10283,
+										10292
+									],
+									[
+										10384,
+										10393
+									],
+									[
+										10870,
+										10875
+									],
+									[
+										11042,
+										11047
+									]
+								],
+								"scope": ""
+							}
 						},
 						"selection":
 						[
 							[
-								1735,
-								1735
+								10874,
+								10874
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/C#/C#.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
+							"detect_indentation": false,
+							"line_numbers": false,
+							"output_tag": 2,
+							"result_base_dir": "",
+							"result_file_regex": "^([^ 	].*):$",
+							"result_line_regex": "^ +([0-9]+):",
+							"scroll_past_end": true,
+							"syntax": "Packages/Default/Find Results.hidden-tmLanguage",
+							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 2728.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "Assets/Scripts/Board.cs",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 5688,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								2513,
-								2513
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/C#/C#.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 1002.0,
+						"translation.y": 5500.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 3,
 					"type": "text"
 				},
 				{
-					"buffer": 3,
-					"file": "Assets/Scripts/Players/Player.cs",
+					"buffer": 2,
+					"file": "Assets/Scripts/Pieces/Piece.cs",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1088,
+						"buffer_size": 12835,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								422,
-								422
+								4839,
+								4839
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C#/C#.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 2658.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "Assets/Scripts/Board.cs",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 7330,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								6101,
+								6120
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C#/C#.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 3428.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "Assets/Scripts/Position.cs",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3439,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								208,
+								217
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C#/C#.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 440.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "Assets/Scripts/Players/Player.cs",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1384,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								893,
+								893
 							]
 						],
 						"settings":
@@ -871,7 +1173,67 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 6,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "Assets/Scripts/Turns.cs",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1062,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								550,
+								550
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C#/C#.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "Assets/Scripts/Players/HumanPlayer.cs",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3867,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								330,
+								330
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C#/C#.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 7,
 					"type": "text"
 				}
 			]

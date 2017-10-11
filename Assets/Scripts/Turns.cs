@@ -7,10 +7,11 @@ public class Turns : MonoBehaviour {
     int current;
     public enum GameMode {standard, handicap, tsume};
     public GameMode gameMode = GameMode.standard;
-	// Use this for initialization
+
+    // Use this for initialization
 	void Start () {
-        startGame();
-        Debug.Log("current turn: " + toString());
+        StartGame();
+        //Debug.Log("current turn: " + toString());
 
 	}
 
@@ -21,27 +22,33 @@ public class Turns : MonoBehaviour {
 
     public void passTurn(){
         current = 1 - current;//switch player
-        Debug.Log("current turn: " + toString());
+        //Debug.Log("current turn: " + toString());
 
     }
 
-    public Player currentPlayer(){
+    public Player activePlayer(){
         return players[current];
     }
 
-    public bool isTurn(Player player){
-        return currentPlayer() == player;
+    public Player inactivePlayer(){
+        return players[1 - current];
     }
 
-    public void startGame(){
-        if (players[0].playerName == Player.Name.BLACK){
-            current = 0;
-        }else{
-            current = 1;
-        }
+    public bool isTurn(Player player){
+        return activePlayer() == player;
     }
 
     public string toString(){
         return players[current].playerName == Player.Name.BLACK ? "Black" : "White";
+    }
+
+    public void StartGame(){
+        current = players[0].playerName == Player.Name.BLACK ? 0 : 1;
+    }
+
+    public void ResetPlayers(){
+        foreach (Player player in players){
+            player.Reset();
+        }
     }
 }

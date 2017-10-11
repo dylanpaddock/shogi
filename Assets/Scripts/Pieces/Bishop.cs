@@ -14,14 +14,13 @@ public class Bishop : Piece {
         directions.Add(new Vector2(1, 1));
         directions.Add(new Vector2(-1, 1));
         directions.Add(new Vector2(-1, -1));
-    }
 
-    public override void Promote(){
-
-    }
-
-    public override void Demote(){
-
+        normalMoves = new List<Vector2>();
+        promotedMoves = new List<Vector2>();
+        promotedMoves.Add(new Vector2(0, 1));
+        promotedMoves.Add(new Vector2(1, 0));
+        promotedMoves.Add(new Vector2(0, -1));
+        promotedMoves.Add(new Vector2(-1, 0));
     }
 
     public override string toString(){
@@ -38,7 +37,7 @@ public class Bishop : Piece {
     protected void CalculateMoveVectors(){
         //can go up to 8 units in any diag direction
         //stop upon reaching a unit
-        this.possibleMoves = new List<Vector2>();
+        this.possibleMoves = isPromoted? new List<Vector2>(promotedMoves) : new List<Vector2>(normalMoves);
         foreach (Vector2 direction in directions){
             Vector2 moveVector = direction;
             Position movePosition = currentPosition + moveVector;
@@ -54,7 +53,6 @@ public class Bishop : Piece {
                 this.possibleMoves.Add(moveVector);
             }
         }
-
     }
 
     public override List<Vector2> getLegalMoveVectors(){

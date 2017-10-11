@@ -1,22 +1,16 @@
-change kifu to record moves as a tree. undo button branches tree, ability to mobe board to anywhere in the kifu.
 
-player makes move --> piece moves, board updates
-pieces have layer according to players, mask pieces for raycast according to player
+ideas:
+    change kifu to record moves as a tree. undo button branches tree, ability to mobe board to anywhere in the kifu.
 
-fill in classes
-
-    Piece
-        update: movement for promotion, demotion
-    HumanPlayer
-        promotion choice
-            promotion choice, Board.forcePromotion()
+unfinished:
     sideboard
         sort piecelist
-rules missing:
-    promotion
-    check
-    winning
-    pawn-specific drop restriction can't drop pawn for mate or in file with another pawn
+    kifu?
+        undo moves
+    pawn
+        can't drop into mate
+
 issues:
     lag when piece hits check. O(n^4) loop.
     occasional null error. can't reproduce
+    possible to move while in check?? always for player 1

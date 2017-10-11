@@ -23,4 +23,16 @@ public class King : Piece {
     public override string toString(){
         return "K";
     }
+
+    public override void Promote(){
+        //do nothing
+    }
+
+    public override void Demote(){
+        //do nothing
+    }
+
+    public override bool canPromote(Position movePos){//override for King, Gold,
+        return false;
+    }
 }

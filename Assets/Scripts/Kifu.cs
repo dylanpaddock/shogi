@@ -34,7 +34,6 @@ public class Kifu : MonoBehaviour {
 
     public void addMove(Move move){
         moveRecord.Add(move);
-        move.number = moveRecord.Count - 1;
     }
 
     public string toString(){

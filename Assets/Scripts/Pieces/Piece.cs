@@ -6,9 +6,11 @@ abstract public class Piece : MonoBehaviour {
     //internal states and data
     public Board board;
     protected List<Vector2> possibleMoves;
-    protected List<Vector2> possibleDrops;
+    protected List<Vector2> possibleDrops = new List<Vector2>();
+    protected List<Vector2> normalMoves;
+    protected List<Vector2> promotedMoves;
 
-    public  bool isPromoted {get; protected set;}
+    public  bool isPromoted {get; set;}
     private Player _currentPlayer;
     public Player currentPlayer {
         get{
@@ -16,8 +18,8 @@ abstract public class Piece : MonoBehaviour {
         }
         set{
             _currentPlayer = value;
-            this.targetSideRotation = _currentPlayer.targetRotation;
-            this.gameObject.layer = _currentPlayer.layerNumber();
+            setSideRotation();
+            gameObject.layer = _currentPlayer.layerNumber();
         }//player controlling this piece, changes on capture/reset
     }
     public Position currentPosition {get; protected set;} //where this piece is now or is moving to
@@ -37,32 +39,11 @@ abstract public class Piece : MonoBehaviour {
             _targetLocation = value;
         }
     }
-    protected bool isChangingSides = false;
-    protected bool isPromoting = false;
-    protected float rotationSpeed = 5f; //fixed
-    protected Quaternion _targetPromotionRotation;
-    protected Quaternion _targetSideRotation;
-    protected Quaternion targetPromotionRotation {//sets a rotation for promotion, x->180->0
-        get{
-            return _targetPromotionRotation;
-        }
-        set{
-            oldRotation = this.transform.rotation;
-            isPromoting = true;
-            _targetPromotionRotation *= value;
-        }
-    }
-    protected Quaternion targetSideRotation {
-        get{
-            return _targetSideRotation;
-        }
-        set{
-            oldRotation = this.transform.rotation;
-            isChangingSides = true;
-            _targetSideRotation = value;
-        }
-    }
+    protected Vector3 targetRotation;
     protected Quaternion oldRotation;
+    protected bool isChangingSides = false;
+    protected bool isFlipping = false;
+    protected float rotationSpeed = 5f; //fixed
 
 
     //visuals
@@ -79,8 +60,8 @@ abstract public class Piece : MonoBehaviour {
         transform.position = board.PieceToWorldPoint(this);
 
         currentPlayer = owner;
-        transform.rotation = currentPlayer.targetRotation;
-        targetSideRotation = currentPlayer.targetRotation;
+        targetRotation = currentPlayer.targetRotation;
+        transform.rotation = Quaternion.Euler(targetRotation);
 
         Mesh mesh = MakeMesh(size);
         GetComponent<MeshFilter>().mesh = mesh;
@@ -99,14 +80,14 @@ abstract public class Piece : MonoBehaviour {
                 transform.position += movingSpeed*(error.normalized);
             }
         }
-
-        if (isChangingSides || isPromoting){//orientation by player, align piece and player directions
-            transform.rotation =  Quaternion.RotateTowards(transform.rotation, targetSideRotation, rotationSpeed);
-            if (this.transform.rotation == targetSideRotation){
+        if (isChangingSides || isFlipping){//orientation by player, align piece and player directions
+            if (Quaternion.Angle(this.transform.rotation, Quaternion.Euler(targetRotation)) < .1f){
+                this.transform.rotation = Quaternion.Euler(targetRotation);
+                //this.transform.rotation = Quaternion.Euler(targetRotation);
+                isFlipping = false;
                 isChangingSides = false;
-            }
-            if (this.transform.rotation == targetPromotionRotation){
-                isPromoting = false;
+            }else{
+                this.transform.rotation = Quaternion.RotateTowards(this.transform.rotation, Quaternion.Euler(targetRotation), 7.5f);
             }
         }
         //check selection w/ raycast
@@ -174,18 +155,23 @@ abstract public class Piece : MonoBehaviour {
         //move with capture
         if(move.type == Move.Type.capture){//relocating captured piece
             Piece captured = board.getPiece(move.endPosition);
+            captured.Demote();
             board.removePiece(captured);
             captured.currentPlayer = this.currentPlayer;
             currentPlayer.sideboard.addPiece(captured);
             captured.moveToPosition(currentPlayer.sideboard.getPosition());
-        }
-        //drop
-        if (move.type == Move.Type.drop){
+            board.removePiece(this);
+            if (move.isPromotion){
+                this.Promote();
+            }
+        }else if (move.type == Move.Type.drop){//drop
             currentPosition.getSideboard().removePiece(this);
         }else{//regular move
             board.removePiece(this);
+            if (move.isPromotion){
+                this.Promote();
+            }
         }
-
         moveToPosition(move.endPosition);
         board.placePiece(this, move.endPosition);
         board.kifu.addMove(move);
@@ -193,19 +179,50 @@ abstract public class Piece : MonoBehaviour {
 
     //flip the piece over
     public virtual void Promote(){
-        isPromoted = false;
+        //expected behavior: flip piece, change movement
+        isPromoted = true;
+        setFlipRotation();
+        possibleMoves = promotedMoves;
     }
 
     public virtual void Demote(){
-        isPromoted = false;
+        if (isPromoted){
+            isPromoted = false;
+            setFlipRotation();
+            possibleMoves = normalMoves;
+        }
     }
 
+    protected void setFlipRotation(){
+        isFlipping = true;
+        targetRotation.y += 180;
+        targetRotation.x *= -1;
+    }
+
+    protected void setSideRotation(){
+        isChangingSides = true;
+        targetRotation.z += 180;
+        targetRotation.x *= -1;
+    }
+
+    public virtual bool canPromote(Position movePos){//override for King, Gold,
+        if (this.currentPosition.isSideboard || this.isPromoted){
+            return false;
+        }else if (this.currentPlayer.isPlayerOne()){
+            return movePos.y < 4 || this.currentPosition.y < 4;
+        }else{
+            return movePos.y > 6 || this.currentPosition.y > 6;
+        }
+    }
 
     public void Reset(){
         //return piece to starting position: unpromoted, in starting position, original owner
         Demote();
         //restore control to owner
-        currentPlayer = owner;
+        if (owner != currentPlayer){
+            currentPlayer = owner;
+            targetRotation = owner.targetRotation;
+        }
         //remove from old position in board/sideboard
         if (currentPosition.isSideboard){
             currentPosition.getSideboard().removePiece(this);
@@ -215,7 +232,6 @@ abstract public class Piece : MonoBehaviour {
         board.placePiece(this, startPosition);
         currentPosition = startPosition; //return to start position on board+internally
         targetLocation = board.PieceToWorldPoint(this);
-
     }
 
     public void selectPiece(){
@@ -252,17 +268,17 @@ abstract public class Piece : MonoBehaviour {
         Mesh mesh = new Mesh();
         Vector3[] vertices = new Vector3[30];
         //front
-        vertices[0] = new Vector3(0-5.1875f, 0-5.5625f, 0-3.15f);
-        vertices[1] = new Vector3(1f-5.1875f, 9.375f-5.5625f, .8125f-3.15f);
-        vertices[2] = new Vector3(5.1875f-5.1875f, 11.125f-5.5625f, 1f-3.15f);
-        vertices[3] = new Vector3(9.375f-5.1875f, 9.375f-5.5625f, .8125f-3.15f);
-        vertices[4] = new Vector3(10.375f-5.1875f, 0-5.5625f, 0-3.15f);
+        vertices[0] = new Vector3(0-5.1875f, 0-5.5625f, 0-3.15f/2);
+        vertices[1] = new Vector3(1f-5.1875f, 9.375f-5.5625f, .8125f-3.15f/2);
+        vertices[2] = new Vector3(5.1875f-5.1875f, 11.125f-5.5625f, 1f-3.15f/2);
+        vertices[3] = new Vector3(9.375f-5.1875f, 9.375f-5.5625f, .8125f-3.15f/2);
+        vertices[4] = new Vector3(10.375f-5.1875f, 0-5.5625f, 0-3.15f/2);
         //back
-        vertices[5] = new Vector3(-5.1875f, 0-5.5625f, 3.5f-3.15f);
-        vertices[6] = new Vector3(1f-5.1875f, 9.375f-5.5625f, 2.6875f-3.15f);
-        vertices[7] = new Vector3(5.1875f-5.1875f, 11.125f-5.5625f, 2.5f-3.15f);
-        vertices[8] = new Vector3(9.375f-5.1875f, 9.375f-5.5625f, 2.6875f-3.15f);
-        vertices[9] = new Vector3(10.375f-5.1875f, 0-5.5625f, 3.5f-3.15f);
+        vertices[5] = new Vector3(-5.1875f, 0-5.5625f, 3.5f-3.15f/2);
+        vertices[6] = new Vector3(1f-5.1875f, 9.375f-5.5625f, 2.6875f-3.15f/2);
+        vertices[7] = new Vector3(5.1875f-5.1875f, 11.125f-5.5625f, 2.5f-3.15f/2);
+        vertices[8] = new Vector3(9.375f-5.1875f, 9.375f-5.5625f, 2.6875f-3.15f/2);
+        vertices[9] = new Vector3(10.375f-5.1875f, 0-5.5625f, 3.5f-3.15f/2);
 
         float vertScale = (27f + pieceSize)/32f;
         float horizScale = 22.5f/28.7f + .2f*pieceSize*(1 - 22.5f/28.7f);
