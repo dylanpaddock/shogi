@@ -9,6 +9,8 @@ public class Move : ScriptableObject {
     public enum Type {simple, capture, drop}
     public Type type;
     public bool isPromotion;
+    public Piece capturedPiece;
+    public bool capturedPromotion;
 
 	// Use this for initialization
 	void Start () {
@@ -25,7 +27,7 @@ public class Move : ScriptableObject {
         newMove.piece = piece;
         newMove.startPosition = piece.currentPosition;
         if (end.isSideboard){
-            Debug.Log("creating impossible move");
+            Debug.LogError("trying to move to sideboard");
         }
         newMove.endPosition = end;
         newMove.isPromotion = p;
@@ -53,6 +55,6 @@ public class Move : ScriptableObject {
         }
 
         string promotion = isPromotion? "+" : "";
-        return pieceName + startPosition.toString()+ connector + promotion + endPosition.toString();
+        return pieceName + startPosition.toString()+ connector + endPosition.toString() + promotion;
     }
 }

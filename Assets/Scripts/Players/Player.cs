@@ -10,7 +10,6 @@ public abstract class Player : MonoBehaviour {
     public Kifu kifu;
     public Turns turns;
     public Vector3 targetRotation {get; protected set;}
-    public Player opponent;
     // Use this for initialization
 
     protected void Awake () {
@@ -27,10 +26,10 @@ public abstract class Player : MonoBehaviour {
 
     protected virtual void TakeTurn(Piece piece, Move move){
         kifu.addMove(move);
-        piece.makeMove(move);
+        piece.makeMove(move, true);
         //promotion choice
         //check for check + game end
-        if (board.isCheckmate(opponent)){
+        if (board.isCheckmate(turns.inactivePlayer())){
             Debug.Log("~~~IT'S CHECKMATE!!!! YOU ARE THE WEINER!!!!");
         }
 
@@ -55,5 +54,9 @@ public abstract class Player : MonoBehaviour {
     }
 
     public abstract void Reset();
+
+    public Player getOpponent(){//super gross. fix encapsulation so this doesn't have to exist.
+        return turns.players[0] == this? turns.players[1] : turns.players[0];
+    }
 
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Turns : MonoBehaviour {
     public List<Player> players; //always two players
-    int current;
+    private int current;
     public enum GameMode {standard, handicap, tsume};
     public GameMode gameMode = GameMode.standard;
 

@@ -10,7 +10,7 @@ abstract public class Piece : MonoBehaviour {
     protected List<Vector2> normalMoves;
     protected List<Vector2> promotedMoves;
 
-    public  bool isPromoted {get; set;}
+    public bool isPromoted {get; set;}
     private Player _currentPlayer;
     public Player currentPlayer {
         get{
@@ -45,11 +45,9 @@ abstract public class Piece : MonoBehaviour {
     protected bool isFlipping = false;
     protected float rotationSpeed = 5f; //fixed
 
-
     //visuals
     protected bool isSelected = false;
     protected int size;
-
 
     protected abstract void Awake();//piece-specific initialization
 
@@ -91,7 +89,6 @@ abstract public class Piece : MonoBehaviour {
             }
         }
         //check selection w/ raycast
-
 	}
 
     //finds all legal positions this piece can move to
@@ -135,31 +132,37 @@ abstract public class Piece : MonoBehaviour {
     //move this piece to the specified position
     //does not check if move is legal on the current board
     //does not change external representation
-    protected void moveToPosition(Position pos){
+    protected void moveToPosition(Position pos, bool update){
         //set moving flags, target location
         isMoving = true;
         currentPosition = pos;
-        if (pos.isSideboard){
+        if (update && pos.isSideboard){
             targetLocation = pos.getSideboard().PieceToWorldPoint(this);
 
-        }else{
+        }else if (update){
             targetLocation = board.PieceToWorldPoint(this);
         }
     }
 
     //move this piece according to the specified move
-    public void makeMove(Move move){
+    public void makeMove(Move move, bool update){
         if (!move.startPosition.isEqual(currentPosition) || move.piece != this || !board.isLegalMovePosition(this, move.endPosition)){
-            Debug.LogError("There's something wrong with the move you made");
+            Debug.Log(!move.startPosition.isEqual(currentPosition));
+            Debug.Log(move.piece != this);
+            Debug.Log(!board.isLegalMovePosition(this, move.endPosition));
+            Debug.Log(board.toString());
+            Debug.Log("There's something wrong with the move you made");
         }
         //move with capture
         if(move.type == Move.Type.capture){//relocating captured piece
             Piece captured = board.getPiece(move.endPosition);
+            move.capturedPiece = captured;
+            move.capturedPromotion = captured.isPromoted;
             captured.Demote();
             board.removePiece(captured);
             captured.currentPlayer = this.currentPlayer;
             currentPlayer.sideboard.addPiece(captured);
-            captured.moveToPosition(currentPlayer.sideboard.getPosition());
+            captured.moveToPosition(currentPlayer.sideboard.getPosition(), update);
             board.removePiece(this);
             if (move.isPromotion){
                 this.Promote();
@@ -172,11 +175,49 @@ abstract public class Piece : MonoBehaviour {
                 this.Promote();
             }
         }
-        moveToPosition(move.endPosition);
+        moveToPosition(move.endPosition, update);
         board.placePiece(this, move.endPosition);
         board.kifu.addMove(move);
     }
 
+    public void unmakeMove(Move move, bool update){
+        if (!move.endPosition.isEqual(currentPosition) || move.piece != this || !board.isEmpty(move.startPosition)){
+            Debug.Log(move.endPosition.toString());
+            Debug.Log(currentPosition.toString());
+            Debug.Log(board.toString());
+            Debug.LogError("There's something wrong with the move you made");
+        }
+
+        board.kifu.removeMove(move);
+        board.removePiece(this);
+        moveToPosition(move.startPosition, update);
+
+        if (move.type == Move.Type.capture){
+            //reset captured piece
+            if (move.capturedPiece.currentPosition.isSideboard){
+                move.capturedPiece.currentPosition.getSideboard().removePiece(move.capturedPiece);
+                board.placePiece(move.capturedPiece, move.endPosition);
+                move.capturedPiece.moveToPosition(move.endPosition, update);
+                move.capturedPiece.currentPlayer = this.currentPlayer.getOpponent();
+                if (move.capturedPromotion){
+                    move.capturedPiece.Promote();
+                }
+            }else{
+                Debug.LogError("this piece is not on the sideboard. can't unmake this move.");
+            }
+            board.placePiece(this, move.startPosition);
+            if (move.isPromotion){
+                this.Demote();
+            }
+        }else if (move.type == Move.Type.drop){
+            move.startPosition.getSideboard().addPiece(this);
+        }else{
+            board.placePiece(this, move.startPosition);
+            if (move.isPromotion){
+                this.Demote();
+            }
+        }
+    }
     //flip the piece over
     public virtual void Promote(){
         //expected behavior: flip piece, change movement
@@ -364,7 +405,6 @@ abstract public class Piece : MonoBehaviour {
 
         return mesh;
     }
-
 
     public abstract string toString();
 

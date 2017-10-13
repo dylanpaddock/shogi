@@ -29,11 +29,14 @@ public class Kifu : MonoBehaviour {
             return null;
         }
         return moveRecord[i];
-
     }
 
     public void addMove(Move move){
         moveRecord.Add(move);
+    }
+
+    public void removeMove(Move move){
+        moveRecord.Remove(move);
     }
 
     public string toString(){

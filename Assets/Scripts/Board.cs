@@ -41,7 +41,6 @@ public class Board : MonoBehaviour {
         if(!isEmpty(pos)){
             return getPiece(pos).currentPlayer != piece.currentPlayer;
         }
-
         return true;
     }
 
@@ -81,9 +80,6 @@ public class Board : MonoBehaviour {
         foreach(Piece p in pieceList){
             p.Reset();
         }
-//        foreach (Sideboard sideboard in sideboards){
-//            sideboard.Reset();
-//        }
         kifu.Reset();
         turns.ResetPlayers();
         turns.StartGame();
@@ -174,40 +170,46 @@ public class Board : MonoBehaviour {
     public bool isCheck(Player p){//player p's king is in check
         //find p's king
         //check row, col, 8 around,
-        Position kingPos = Position.makeNew(p.sideboard);//dummy assignment
-        for (int x = 1; x < numCols; x++){
-            for (int y = 1; y < numRows; y++){
+        Position kingPos = null;//dummy assignment
+        for (int x = 1; x <= numCols; x++){
+            for (int y = 1; y <= numRows; y++){
                 if (pieceLayout[x, y] is King && pieceLayout[x, y].currentPlayer == p){
                     kingPos = Position.makeNew(x, y);
                 }
             }
         }
-        foreach (Piece piece in pieceLayout){
+        foreach (Piece piece in pieceList){
             if (piece != null && piece.currentPlayer != p && piece.isLegalMovePosition(kingPos)){// any of op's pieces can move to king
                 return true;
             }
         }
         return false;
-
-
     }
 
-    //makes a move, looks for check, unmakes move
+    //makes a move, looks for check, unmakes move. assumes move is legal on the current board.
+//    public bool removesCheck(Move move){
+//        if (!move.startPosition.isSideboard){
+//            removePiece(move.piece);//remove the moving piece from the board
+//        }
+//        Piece temp = getPiece(move.endPosition); //store the object where it's landing to replace later
+//        placePiece(move.piece, move.endPosition);
+//        bool result = isCheck(move.piece.currentPlayer); //is it still check on the altered board?
+//        pieceLayout[move.endPosition.x, move.endPosition.y] = temp; //undo the move
+//        if (!move.startPosition.isSideboard){
+//            placePiece(move.piece, move.startPosition);
+//        }
+//        return !result;
+//    }
+
     public bool removesCheck(Move move){
-        if (!move.startPosition.isSideboard){
-            removePiece(move.piece);
-        }
-        Piece temp = getPiece(move.endPosition);
-        placePiece(move.piece, move.endPosition);
-        bool result = isCheck(move.piece.currentPlayer);
-        pieceLayout[move.endPosition.x, move.endPosition.y] = temp;
-        if (!move.startPosition.isSideboard){
-            placePiece(move.piece, move.startPosition);
-        }
+        move.piece.makeMove(move, false);
+        bool result = isCheck(move.piece.currentPlayer); //is it still check on the altered board?
+        move.piece.unmakeMove(move, false);
         return !result;
     }
 
     public bool isCheckmate(Player p){
+        //returns true if Player p can make no move to remove checkmate.
         if (!isCheck(p)){
             return false;
         }
@@ -222,7 +224,7 @@ public class Board : MonoBehaviour {
             }
         }
         winnerText.gameObject.SetActive(true);
-        winnerText.text = turns.inactivePlayer().toString() + " is the winner!";
+        winnerText.text = turns.activePlayer().toString() + " is the winner!";
         return true;
     }
 
@@ -241,5 +243,14 @@ public class Board : MonoBehaviour {
 
         }
         return pawnList;
+    }
+
+    public void UndoLastMove(){
+        Move m = kifu.getLastMove();
+        if (m != null){
+            kifu.removeMove(m);
+            m.piece.unmakeMove(m, true);
+            turns.passTurn();
+        }
     }
 }

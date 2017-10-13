@@ -65,6 +65,7 @@ public class HumanPlayer : Player {
                         if (canPromote){Debug.Log("this piece can promote!! woopee");}
                         chosenMove = Move.makeNew(selectedPiece, movePosition, canPromote);
                         if (!board.removesCheck(chosenMove)){
+                            Debug.Log("move doesn't remove check");
                             legalMove = false;//jump down
                         }else if (canPromote && !board.forcePromotion(selectedPiece, movePosition)){
                             hasPromotionChoice = true;

@@ -6,11 +6,11 @@ unfinished:
     sideboard
         sort piecelist
     kifu?
-        undo moves
+        undo moves (connect button)
     pawn
         can't drop into mate
-
 issues:
     lag when piece hits check. O(n^4) loop.
-    occasional null error. can't reproduce
-    possible to move while in check?? always for player 1
+    fix encapsulation for Board and Piece.
+    possible weirdness with pieces going to zero on promotion
+    pieces moving but waiting to rotate on promotion??

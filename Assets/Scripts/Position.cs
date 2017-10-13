@@ -84,12 +84,12 @@ public class Position : ScriptableObject {
     }
 
     public bool isEqual(Position other){
-        if (this.isSideboard && other.isSideboard){
-            return this.getSideboard() == other.getSideboard();
-        }else if (this.isSideboard != other.isSideboard || this.x != other.x || this.y != other.y){
+        if (this.isSideboard ^ other.isSideboard){//only one is on sideboard
             return false;
+        }else if (this.isSideboard && other.isSideboard){ //both on sideboard
+            return this.getSideboard() == other.getSideboard();
         }else {
-            return true;
+            return this.x == other.x && this.y == other.y; // both on board and same values
         }
     }
 
